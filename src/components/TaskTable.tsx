@@ -2,7 +2,7 @@
 interface Task {
   id: string;
   title: string;
-  status: "To Do" | "In Progress" | "Done";
+  status: "A Fazer" | "Em Andamento" | "Concluído";
   deadline: string;
   assignee: string;
 }
@@ -13,9 +13,9 @@ interface TaskTableProps {
 }
 
 const statusColors = {
-  "To Do": "bg-gray-100 text-gray-800",
-  "In Progress": "bg-blue-100 text-blue-800",
-  "Done": "bg-green-100 text-green-800"
+  "A Fazer": "bg-gray-100 text-gray-800",
+  "Em Andamento": "bg-blue-100 text-blue-800",
+  "Concluído": "bg-green-100 text-green-800"
 };
 
 export function TaskTable({ tasks, onTaskClick }: TaskTableProps) {
@@ -25,16 +25,16 @@ export function TaskTable({ tasks, onTaskClick }: TaskTableProps) {
         <thead className="bg-gray-50">
           <tr>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Task
+              Tarefa
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Status
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Assignee
+              Responsável
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Deadline
+              Prazo
             </th>
           </tr>
         </thead>

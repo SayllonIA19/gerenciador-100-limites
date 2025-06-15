@@ -5,7 +5,7 @@ interface Event {
   id: string;
   title: string;
   date: string;
-  status: "Planned" | "In Progress" | "Completed" | "Cancelled";
+  status: "Planejado" | "Em Andamento" | "Concluído" | "Cancelado";
   organizer: string;
   location?: string;
 }
@@ -16,10 +16,10 @@ interface EventCardProps {
 }
 
 const statusColors = {
-  "Planned": "bg-blue-100 text-blue-800",
-  "In Progress": "bg-yellow-100 text-yellow-800",
-  "Completed": "bg-green-100 text-green-800",
-  "Cancelled": "bg-red-100 text-red-800"
+  "Planejado": "bg-blue-100 text-blue-800",
+  "Em Andamento": "bg-yellow-100 text-yellow-800",
+  "Concluído": "bg-green-100 text-green-800",
+  "Cancelado": "bg-red-100 text-red-800"
 };
 
 export function EventCard({ event, onClick }: EventCardProps) {
