@@ -1,5 +1,5 @@
 
-import { Heart, MessageCircle, Share } from "lucide-react";
+import { Heart } from "lucide-react";
 
 interface FeedPostProps {
   post: {
@@ -39,18 +39,10 @@ export function FeedPost({ post }: FeedPostProps) {
       
       <div className="border-t pt-4">
         <p className="text-sm text-blue-600 font-medium mb-3">Related to: {post.event}</p>
-        <div className="flex items-center space-x-6 text-gray-500">
+        <div className="flex items-center text-gray-500">
           <button className="flex items-center space-x-2 hover:text-red-500">
             <Heart className="h-5 w-5" />
             <span className="text-sm">Like</span>
-          </button>
-          <button className="flex items-center space-x-2 hover:text-blue-500">
-            <MessageCircle className="h-5 w-5" />
-            <span className="text-sm">Comment</span>
-          </button>
-          <button className="flex items-center space-x-2 hover:text-green-500">
-            <Share className="h-5 w-5" />
-            <span className="text-sm">Share</span>
           </button>
         </div>
       </div>

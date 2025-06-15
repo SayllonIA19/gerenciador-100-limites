@@ -4,8 +4,10 @@ import { TaskTable } from "@/components/TaskTable";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Calendar, MapPin, User, DollarSign, FileText, ArrowLeft } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
+import { Calendar, MapPin, User, DollarSign, FileText, ArrowLeft, Upload, Image, File } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
+import { useState } from "react";
 
 // Mock data
 const eventData = {
@@ -39,6 +41,15 @@ const statusColors = {
 export default function EventDetail() {
   const navigate = useNavigate();
   const { id } = useParams();
+  const [description, setDescription] = useState(eventData.description);
+  const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
+
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files) {
+      const newFiles = Array.from(event.target.files);
+      setUploadedFiles(prev => [...prev, ...newFiles]);
+    }
+  };
 
   return (
     <Layout>
@@ -66,41 +77,90 @@ export default function EventDetail() {
               <CardHeader>
                 <CardTitle>Event Information</CardTitle>
               </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="border-l-4 border-blue-500 pl-4">
+                    <div className="flex items-center space-x-3 mb-2">
+                      <Calendar className="h-5 w-5 text-gray-400" />
+                      <span className="text-sm font-medium text-gray-500">Date & Time</span>
+                    </div>
+                    <p className="text-gray-900">{eventData.date}</p>
+                  </div>
+                  
+                  <div className="border-l-4 border-green-500 pl-4">
+                    <div className="flex items-center space-x-3 mb-2">
+                      <MapPin className="h-5 w-5 text-gray-400" />
+                      <span className="text-sm font-medium text-gray-500">Location</span>
+                    </div>
+                    <p className="text-gray-900">{eventData.location}</p>
+                  </div>
+                  
+                  <div className="border-l-4 border-purple-500 pl-4">
+                    <div className="flex items-center space-x-3 mb-2">
+                      <User className="h-5 w-5 text-gray-400" />
+                      <span className="text-sm font-medium text-gray-500">Organizer</span>
+                    </div>
+                    <p className="text-gray-900">{eventData.organizer}</p>
+                  </div>
+                  
+                  <div className="border-l-4 border-yellow-500 pl-4">
+                    <div className="flex items-center space-x-3 mb-2">
+                      <DollarSign className="h-5 w-5 text-gray-400" />
+                      <span className="text-sm font-medium text-gray-500">Contract Value</span>
+                    </div>
+                    <p className="text-gray-900">${eventData.contractValue.toLocaleString()}</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Description</CardTitle>
+              </CardHeader>
               <CardContent className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="flex items-center space-x-3">
-                    <Calendar className="h-5 w-5 text-gray-400" />
-                    <div>
-                      <p className="text-sm text-gray-500">Date & Time</p>
-                      <p className="font-medium">{eventData.date}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center space-x-3">
-                    <MapPin className="h-5 w-5 text-gray-400" />
-                    <div>
-                      <p className="text-sm text-gray-500">Location</p>
-                      <p className="font-medium">{eventData.location}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center space-x-3">
-                    <User className="h-5 w-5 text-gray-400" />
-                    <div>
-                      <p className="text-sm text-gray-500">Organizer</p>
-                      <p className="font-medium">{eventData.organizer}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center space-x-3">
-                    <DollarSign className="h-5 w-5 text-gray-400" />
-                    <div>
-                      <p className="text-sm text-gray-500">Contract Value</p>
-                      <p className="font-medium">${eventData.contractValue.toLocaleString()}</p>
-                    </div>
+                <Textarea
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  className="min-h-[150px]"
+                  placeholder="Enter event description... (Supports Markdown)"
+                />
+                
+                <div className="border-2 border-dashed border-gray-300 rounded-lg p-6">
+                  <div className="text-center">
+                    <Upload className="h-8 w-8 text-gray-400 mx-auto mb-2" />
+                    <p className="text-sm text-gray-600 mb-2">Upload images, PDFs, or other files</p>
+                    <input
+                      type="file"
+                      multiple
+                      accept="image/*,.pdf,.doc,.docx,.txt,.md"
+                      onChange={handleFileUpload}
+                      className="hidden"
+                      id="file-upload"
+                    />
+                    <label htmlFor="file-upload">
+                      <Button variant="outline" className="cursor-pointer">
+                        Choose Files
+                      </Button>
+                    </label>
                   </div>
                 </div>
-                <div>
-                  <p className="text-sm text-gray-500 mb-2">Description</p>
-                  <p className="text-gray-900">{eventData.description}</p>
-                </div>
+
+                {uploadedFiles.length > 0 && (
+                  <div className="space-y-2">
+                    <p className="text-sm font-medium text-gray-700">Uploaded Files:</p>
+                    {uploadedFiles.map((file, index) => (
+                      <div key={index} className="flex items-center space-x-2 p-2 bg-gray-50 rounded">
+                        {file.type.startsWith('image/') ? (
+                          <Image className="h-4 w-4 text-blue-500" />
+                        ) : (
+                          <File className="h-4 w-4 text-gray-500" />
+                        )}
+                        <span className="text-sm text-gray-700">{file.name}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </CardContent>
             </Card>
 

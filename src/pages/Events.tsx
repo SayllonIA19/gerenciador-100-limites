@@ -1,11 +1,11 @@
 
 import { useState } from "react";
 import { Layout } from "@/components/Layout";
-import { EventCard } from "@/components/EventCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Plus, Search } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Plus, Search, Calendar, MapPin, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 // Mock data
@@ -17,6 +17,13 @@ const events = [
   { id: "5", title: "Quarterly Review", date: "2024-06-30", status: "Planned" as const, organizer: "David Brown", location: "Boardroom" },
   { id: "6", title: "Training Session", date: "2024-05-15", status: "Completed" as const, organizer: "Lisa Garcia", location: "Training Center" }
 ];
+
+const statusColors = {
+  "Planned": "bg-blue-100 text-blue-800",
+  "In Progress": "bg-yellow-100 text-yellow-800",
+  "Completed": "bg-green-100 text-green-800",
+  "Cancelled": "bg-red-100 text-red-800"
+};
 
 export default function Events() {
   const navigate = useNavigate();
@@ -90,15 +97,41 @@ export default function Events() {
           </div>
         </div>
 
-        {/* Events Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredEvents.map((event) => (
-            <EventCard 
-              key={event.id} 
-              event={event} 
-              onClick={() => navigate(`/events/${event.id}`)} 
-            />
-          ))}
+        {/* Events List */}
+        <div className="bg-white rounded-lg shadow-sm border">
+          <div className="divide-y divide-gray-200">
+            {filteredEvents.map((event) => (
+              <div 
+                key={event.id}
+                className="p-6 cursor-pointer hover:bg-gray-50 transition-colors"
+                onClick={() => navigate(`/events/${event.id}`)}
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="text-lg font-semibold text-gray-900">{event.title}</h3>
+                  <Badge className={statusColors[event.status]}>
+                    {event.status}
+                  </Badge>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-600">
+                  <div className="flex items-center">
+                    <Calendar className="h-4 w-4 mr-2" />
+                    {event.date}
+                  </div>
+                  <div className="flex items-center">
+                    <User className="h-4 w-4 mr-2" />
+                    {event.organizer}
+                  </div>
+                  {event.location && (
+                    <div className="flex items-center">
+                      <MapPin className="h-4 w-4 mr-2" />
+                      {event.location}
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
 
         {filteredEvents.length === 0 && (

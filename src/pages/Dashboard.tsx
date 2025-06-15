@@ -3,11 +3,10 @@ import { Layout } from "@/components/Layout";
 import { KPICard } from "@/components/KPICard";
 import { EventCard } from "@/components/EventCard";
 import { TaskTable } from "@/components/TaskTable";
-import { DollarSign, TrendingUp, Calendar, CheckSquare } from "lucide-react";
+import { TrendingUp, Calendar, CheckSquare } from "lucide-react";
 
 // Mock data
 const kpiData = [
-  { title: "Total Revenue", value: "$45,230", icon: <DollarSign className="h-6 w-6 text-blue-600" /> },
   { title: "Active Projects", value: "12", icon: <TrendingUp className="h-6 w-6 text-green-600" /> },
   { title: "Upcoming Events", value: "8", icon: <Calendar className="h-6 w-6 text-purple-600" /> },
   { title: "Pending Tasks", value: "24", icon: <CheckSquare className="h-6 w-6 text-orange-600" /> }
@@ -25,17 +24,26 @@ const recentTasks = [
   { id: "3", title: "Book venue", status: "To Do" as const, deadline: "2024-06-25", assignee: "Carol Davis" }
 ];
 
+function getGreeting() {
+  const hour = new Date().getHours();
+  if (hour < 12) return "Good morning";
+  if (hour < 18) return "Good afternoon";
+  return "Good evening";
+}
+
 export default function Dashboard() {
+  const userName = "Sayllon"; // This would come from user context/auth
+
   return (
     <Layout>
       <div className="space-y-6">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-          <p className="text-gray-600 mt-2">Welcome back! Here's what's happening with your projects.</p>
+          <h1 className="text-3xl font-bold text-gray-900">{getGreeting()}, {userName}!</h1>
+          <p className="text-gray-600 mt-2">Here's what's happening with your projects.</p>
         </div>
 
         {/* KPI Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {kpiData.map((kpi, index) => (
             <KPICard key={index} {...kpi} />
           ))}
