@@ -10,19 +10,19 @@ import { useNavigate } from "react-router-dom";
 
 // Mock data
 const events = [
-  { id: "1", title: "Product Launch Event", date: "2024-06-20", status: "Planned" as const, organizer: "John Doe", location: "Conference Hall A" },
-  { id: "2", title: "Team Building Workshop", date: "2024-06-18", status: "In Progress" as const, organizer: "Jane Smith", location: "Office" },
-  { id: "3", title: "Client Presentation", date: "2024-06-15", status: "Completed" as const, organizer: "Mike Johnson", location: "Client Office" },
-  { id: "4", title: "Marketing Campaign Review", date: "2024-07-02", status: "Planned" as const, organizer: "Sarah Wilson", location: "Meeting Room B" },
-  { id: "5", title: "Quarterly Review", date: "2024-06-30", status: "Planned" as const, organizer: "David Brown", location: "Boardroom" },
-  { id: "6", title: "Training Session", date: "2024-05-15", status: "Completed" as const, organizer: "Lisa Garcia", location: "Training Center" }
+  { id: "1", title: "Evento de Lançamento do Produto", date: "2024-06-20", status: "Planejado" as const, organizer: "João Silva", location: "Auditório A" },
+  { id: "2", title: "Workshop de Integração da Equipe", date: "2024-06-18", status: "Em Andamento" as const, organizer: "Maria Santos", location: "Escritório" },
+  { id: "3", title: "Apresentação para Cliente", date: "2024-06-15", status: "Concluído" as const, organizer: "Pedro Johnson", location: "Escritório do Cliente" },
+  { id: "4", title: "Revisão da Campanha de Marketing", date: "2024-07-02", status: "Planejado" as const, organizer: "Ana Wilson", location: "Sala de Reunião B" },
+  { id: "5", title: "Revisão Trimestral", date: "2024-06-30", status: "Planejado" as const, organizer: "Carlos Brown", location: "Sala de Diretoria" },
+  { id: "6", title: "Sessão de Treinamento", date: "2024-05-15", status: "Concluído" as const, organizer: "Lisa Garcia", location: "Centro de Treinamento" }
 ];
 
 const statusColors = {
-  "Planned": "bg-blue-100 text-blue-800",
-  "In Progress": "bg-yellow-100 text-yellow-800",
-  "Completed": "bg-green-100 text-green-800",
-  "Cancelled": "bg-red-100 text-red-800"
+  "Planejado": "bg-blue-100 text-blue-800",
+  "Em Andamento": "bg-yellow-100 text-yellow-800",
+  "Concluído": "bg-green-100 text-green-800",
+  "Cancelado": "bg-red-100 text-red-800"
 };
 
 export default function Events() {
@@ -48,12 +48,12 @@ export default function Events() {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Events</h1>
-            <p className="text-gray-600 mt-2">Manage and track all your events</p>
+            <h1 className="text-3xl font-bold text-gray-900">Eventos</h1>
+            <p className="text-gray-600 mt-2">Gerencie e acompanhe todos os seus eventos</p>
           </div>
           <Button className="bg-blue-600 hover:bg-blue-700">
             <Plus className="h-4 w-4 mr-2" />
-            New Event
+            Novo Evento
           </Button>
         </div>
 
@@ -63,7 +63,7 @@ export default function Events() {
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
               <Input
-                placeholder="Search events..."
+                placeholder="Buscar eventos..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10"
@@ -71,28 +71,28 @@ export default function Events() {
             </div>
             <Select value={statusFilter} onValueChange={setStatusFilter}>
               <SelectTrigger>
-                <SelectValue placeholder="Filter by status" />
+                <SelectValue placeholder="Filtrar por status" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Statuses</SelectItem>
-                <SelectItem value="Planned">Planned</SelectItem>
-                <SelectItem value="In Progress">In Progress</SelectItem>
-                <SelectItem value="Completed">Completed</SelectItem>
-                <SelectItem value="Cancelled">Cancelled</SelectItem>
+                <SelectItem value="all">Todos os Status</SelectItem>
+                <SelectItem value="Planejado">Planejado</SelectItem>
+                <SelectItem value="Em Andamento">Em Andamento</SelectItem>
+                <SelectItem value="Concluído">Concluído</SelectItem>
+                <SelectItem value="Cancelado">Cancelado</SelectItem>
               </SelectContent>
             </Select>
             <Select value={monthFilter} onValueChange={setMonthFilter}>
               <SelectTrigger>
-                <SelectValue placeholder="Filter by month" />
+                <SelectValue placeholder="Filtrar por mês" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Months</SelectItem>
-                <SelectItem value="current">Current Month</SelectItem>
-                <SelectItem value="next">Next Month</SelectItem>
+                <SelectItem value="all">Todos os Meses</SelectItem>
+                <SelectItem value="current">Mês Atual</SelectItem>
+                <SelectItem value="next">Próximo Mês</SelectItem>
               </SelectContent>
             </Select>
             <div className="text-sm text-gray-500 flex items-center">
-              Showing {filteredEvents.length} of {events.length} events
+              Mostrando {filteredEvents.length} de {events.length} eventos
             </div>
           </div>
         </div>
@@ -136,7 +136,7 @@ export default function Events() {
 
         {filteredEvents.length === 0 && (
           <div className="text-center py-12">
-            <p className="text-gray-500">No events found matching your criteria.</p>
+            <p className="text-gray-500">Nenhum evento encontrado que corresponda aos seus critérios.</p>
           </div>
         )}
       </div>

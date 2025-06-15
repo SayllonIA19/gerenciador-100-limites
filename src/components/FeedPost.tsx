@@ -31,18 +31,18 @@ export function FeedPost({ post }: FeedPostProps) {
         <div className="grid grid-cols-2 gap-2 mb-4">
           {post.media.slice(0, 4).map((media, index) => (
             <div key={index} className="bg-gray-200 rounded-lg h-32 flex items-center justify-center">
-              <span className="text-gray-500 text-sm">Media {index + 1}</span>
+              <span className="text-gray-500 text-sm">Mídia {index + 1}</span>
             </div>
           ))}
         </div>
       )}
       
       <div className="border-t pt-4">
-        <p className="text-sm text-blue-600 font-medium mb-3">Related to: {post.event}</p>
+        <p className="text-sm text-blue-600 font-medium mb-3">Relacionado a: {post.event}</p>
         <div className="flex items-center text-gray-500">
           <button className="flex items-center space-x-2 hover:text-red-500">
             <Heart className="h-5 w-5" />
-            <span className="text-sm">Like</span>
+            <span className="text-sm">Curtir</span>
           </button>
         </div>
       </div>

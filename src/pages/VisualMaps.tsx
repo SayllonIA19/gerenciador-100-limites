@@ -10,55 +10,55 @@ import { useState } from "react";
 const visualMaps = [
   {
     id: "1",
-    title: "Product Launch Process Flow",
-    type: "Process Diagram",
+    title: "Fluxo do Processo de Lançamento",
+    type: "Diagrama de Processo",
     embedUrl: "https://miro.com/app/board/example1",
-    relatedProject: "Product Launch",
-    relatedEvent: "Product Launch Event",
+    relatedProject: "Lançamento do Produto",
+    relatedEvent: "Evento de Lançamento do Produto",
     createdDate: "2024-06-01"
   },
   {
     id: "2",
-    title: "Website Redesign Mind Map",
-    type: "Mind Map",
+    title: "Mapa Mental do Redesign do Website",
+    type: "Mapa Mental",
     embedUrl: "https://draw.io/example2",
-    relatedProject: "Website Redesign",
+    relatedProject: "Redesign do Website",
     relatedEvent: null,
     createdDate: "2024-05-15"
   },
   {
     id: "3",
-    title: "Marketing Strategy Flowchart",
-    type: "Flowchart",
+    title: "Fluxograma da Estratégia de Marketing",
+    type: "Fluxograma",
     embedUrl: "https://lucidchart.com/example3",
-    relatedProject: "Marketing Campaign Q2",
-    relatedEvent: "Campaign Kickoff",
+    relatedProject: "Campanha de Marketing Q2",
+    relatedEvent: "Início da Campanha",
     createdDate: "2024-04-20"
   },
   {
     id: "4",
-    title: "System Architecture Diagram",
-    type: "Process Diagram",
+    title: "Diagrama da Arquitetura do Sistema",
+    type: "Diagrama de Processo",
     embedUrl: "https://draw.io/example4",
-    relatedProject: "System Integration",
+    relatedProject: "Integração de Sistema",
     relatedEvent: null,
     createdDate: "2024-06-05"
   },
   {
     id: "5",
-    title: "User Journey Map",
-    type: "Mind Map",
+    title: "Mapa da Jornada do Usuário",
+    type: "Mapa Mental",
     embedUrl: "https://miro.com/app/board/example5",
-    relatedProject: "Mobile App Development",
+    relatedProject: "Desenvolvimento de App Mobile",
     relatedEvent: null,
     createdDate: "2024-05-28"
   }
 ];
 
 const typeColors = {
-  "Mind Map": "bg-purple-100 text-purple-800",
-  "Flowchart": "bg-blue-100 text-blue-800",
-  "Process Diagram": "bg-green-100 text-green-800"
+  "Mapa Mental": "bg-purple-100 text-purple-800",
+  "Fluxograma": "bg-blue-100 text-blue-800",
+  "Diagrama de Processo": "bg-green-100 text-green-800"
 };
 
 export default function VisualMaps() {
@@ -69,12 +69,12 @@ export default function VisualMaps() {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Visual Maps</h1>
-            <p className="text-gray-600 mt-2">Manage project diagrams, mind maps, and process flows</p>
+            <h1 className="text-3xl font-bold text-gray-900">Mapas Visuais</h1>
+            <p className="text-gray-600 mt-2">Gerencie diagramas de projetos, mapas mentais e fluxos de processo</p>
           </div>
           <Button className="bg-blue-600 hover:bg-blue-700">
             <Plus className="h-4 w-4 mr-2" />
-            Add New Map
+            Adicionar Novo Mapa
           </Button>
         </div>
 
@@ -84,7 +84,7 @@ export default function VisualMaps() {
             <div className="flex items-center justify-between">
               <div>
                 <Button variant="ghost" onClick={() => setSelectedMap(null)}>
-                  ← Back to Maps
+                  ← Voltar aos Mapas
                 </Button>
                 <h2 className="text-2xl font-bold text-gray-900 mt-2">{selectedMap.title}</h2>
                 <div className="flex items-center space-x-2 mt-2">
@@ -92,17 +92,17 @@ export default function VisualMaps() {
                     {selectedMap.type}
                   </Badge>
                   {selectedMap.relatedProject && (
-                    <Badge variant="outline">Project: {selectedMap.relatedProject}</Badge>
+                    <Badge variant="outline">Projeto: {selectedMap.relatedProject}</Badge>
                   )}
                   {selectedMap.relatedEvent && (
-                    <Badge variant="outline">Event: {selectedMap.relatedEvent}</Badge>
+                    <Badge variant="outline">Evento: {selectedMap.relatedEvent}</Badge>
                   )}
                 </div>
               </div>
               <Button variant="outline" asChild>
                 <a href={selectedMap.embedUrl} target="_blank" rel="noopener noreferrer">
                   <ExternalLink className="h-4 w-4 mr-2" />
-                  Open in External Tool
+                  Abrir na Ferramenta Externa
                 </a>
               </Button>
             </div>
@@ -113,13 +113,13 @@ export default function VisualMaps() {
                 <div className="w-full h-96 bg-gray-100 rounded-lg flex items-center justify-center">
                   <div className="text-center">
                     <ExternalLink className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                    <p className="text-gray-600 mb-2">External Map Embed</p>
+                    <p className="text-gray-600 mb-2">Incorporação de Mapa Externo</p>
                     <p className="text-sm text-gray-500">
-                      Map would be embedded here from: {selectedMap.embedUrl}
+                      O mapa seria incorporado aqui de: {selectedMap.embedUrl}
                     </p>
                     <Button variant="outline" className="mt-4" asChild>
                       <a href={selectedMap.embedUrl} target="_blank" rel="noopener noreferrer">
-                        View Full Map
+                        Ver Mapa Completo
                       </a>
                     </Button>
                   </div>
@@ -144,18 +144,18 @@ export default function VisualMaps() {
                   <div className="space-y-2">
                     {map.relatedProject && (
                       <div className="text-sm">
-                        <span className="text-gray-500">Project: </span>
+                        <span className="text-gray-500">Projeto: </span>
                         <span className="font-medium">{map.relatedProject}</span>
                       </div>
                     )}
                     {map.relatedEvent && (
                       <div className="text-sm">
-                        <span className="text-gray-500">Event: </span>
+                        <span className="text-gray-500">Evento: </span>
                         <span className="font-medium">{map.relatedEvent}</span>
                       </div>
                     )}
                     <div className="text-sm">
-                      <span className="text-gray-500">Created: </span>
+                      <span className="text-gray-500">Criado: </span>
                       <span>{map.createdDate}</span>
                     </div>
                   </div>
@@ -167,7 +167,7 @@ export default function VisualMaps() {
                       onClick={() => setSelectedMap(map)}
                     >
                       <Eye className="h-4 w-4 mr-2" />
-                      View
+                      Visualizar
                     </Button>
                     <Button size="sm" variant="outline" asChild>
                       <a href={map.embedUrl} target="_blank" rel="noopener noreferrer">
@@ -183,7 +183,7 @@ export default function VisualMaps() {
 
         {!selectedMap && visualMaps.length === 0 && (
           <div className="text-center py-12">
-            <p className="text-gray-500">No visual maps found. Create your first map to get started!</p>
+            <p className="text-gray-500">Nenhum mapa visual encontrado. Crie seu primeiro mapa para começar!</p>
           </div>
         )}
       </div>

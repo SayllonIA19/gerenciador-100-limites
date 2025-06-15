@@ -10,17 +10,17 @@ import { useState } from "react";
 
 // Mock data
 const projects = [
-  { id: "1", name: "Website Redesign", description: "Complete overhaul of company website", status: "Active", owner: "John Doe", createdDate: "2024-05-01", progress: 65 },
-  { id: "2", name: "Mobile App Development", description: "Native mobile app for iOS and Android", status: "Active", owner: "Jane Smith", createdDate: "2024-04-15", progress: 40 },
-  { id: "3", name: "Marketing Campaign Q2", description: "Social media and digital marketing campaign", status: "Completed", owner: "Mike Johnson", createdDate: "2024-03-01", progress: 100 },
-  { id: "4", name: "Product Research", description: "Market research for new product line", status: "On Hold", owner: "Sarah Wilson", createdDate: "2024-05-20", progress: 25 },
-  { id: "5", name: "System Integration", description: "Integration of new CRM system", status: "Active", owner: "David Brown", createdDate: "2024-06-01", progress: 80 }
+  { id: "1", name: "Redesign do Website", description: "Reformulação completa do website da empresa", status: "Ativo", owner: "João Silva", createdDate: "2024-05-01", progress: 65 },
+  { id: "2", name: "Desenvolvimento de App Mobile", description: "App nativo para iOS e Android", status: "Ativo", owner: "Maria Santos", createdDate: "2024-04-15", progress: 40 },
+  { id: "3", name: "Campanha de Marketing Q2", description: "Campanha de marketing digital e redes sociais", status: "Concluído", owner: "Pedro Johnson", createdDate: "2024-03-01", progress: 100 },
+  { id: "4", name: "Pesquisa de Produto", description: "Pesquisa de mercado para nova linha de produtos", status: "Em Espera", owner: "Ana Wilson", createdDate: "2024-05-20", progress: 25 },
+  { id: "5", name: "Integração de Sistema", description: "Integração do novo sistema CRM", status: "Ativo", owner: "Carlos Brown", createdDate: "2024-06-01", progress: 80 }
 ];
 
 const statusColors = {
-  "Active": "bg-green-100 text-green-800",
-  "On Hold": "bg-yellow-100 text-yellow-800",
-  "Completed": "bg-blue-100 text-blue-800"
+  "Ativo": "bg-green-100 text-green-800",
+  "Em Espera": "bg-yellow-100 text-yellow-800",
+  "Concluído": "bg-blue-100 text-blue-800"
 };
 
 export default function Projects() {
@@ -40,12 +40,12 @@ export default function Projects() {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Projects</h1>
-            <p className="text-gray-600 mt-2">Manage and track all your projects</p>
+            <h1 className="text-3xl font-bold text-gray-900">Projetos</h1>
+            <p className="text-gray-600 mt-2">Gerencie e acompanhe todos os seus projetos</p>
           </div>
           <Button className="bg-blue-600 hover:bg-blue-700">
             <Plus className="h-4 w-4 mr-2" />
-            New Project
+            Novo Projeto
           </Button>
         </div>
 
@@ -55,7 +55,7 @@ export default function Projects() {
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
               <Input
-                placeholder="Search projects..."
+                placeholder="Buscar projetos..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10"
@@ -63,17 +63,17 @@ export default function Projects() {
             </div>
             <Select value={statusFilter} onValueChange={setStatusFilter}>
               <SelectTrigger>
-                <SelectValue placeholder="Filter by status" />
+                <SelectValue placeholder="Filtrar por status" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Statuses</SelectItem>
-                <SelectItem value="Active">Active</SelectItem>
-                <SelectItem value="On Hold">On Hold</SelectItem>
-                <SelectItem value="Completed">Completed</SelectItem>
+                <SelectItem value="all">Todos os Status</SelectItem>
+                <SelectItem value="Ativo">Ativo</SelectItem>
+                <SelectItem value="Em Espera">Em Espera</SelectItem>
+                <SelectItem value="Concluído">Concluído</SelectItem>
               </SelectContent>
             </Select>
             <div className="text-sm text-gray-500 flex items-center">
-              Showing {filteredProjects.length} of {projects.length} projects
+              Mostrando {filteredProjects.length} de {projects.length} projetos
             </div>
           </div>
         </div>
@@ -100,13 +100,13 @@ export default function Projects() {
                   </div>
                   <div className="flex items-center space-x-2 text-sm text-gray-500">
                     <Calendar className="h-4 w-4" />
-                    <span>Created {project.createdDate}</span>
+                    <span>Criado em {project.createdDate}</span>
                   </div>
                 </div>
 
                 <div className="space-y-2">
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-gray-500">Progress</span>
+                    <span className="text-gray-500">Progresso</span>
                     <span className="font-medium">{project.progress}%</span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-2">
@@ -123,7 +123,7 @@ export default function Projects() {
 
         {filteredProjects.length === 0 && (
           <div className="text-center py-12">
-            <p className="text-gray-500">No projects found matching your criteria.</p>
+            <p className="text-gray-500">Nenhum projeto encontrado que corresponda aos seus critérios.</p>
           </div>
         )}
       </div>
