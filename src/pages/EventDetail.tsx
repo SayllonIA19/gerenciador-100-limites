@@ -12,30 +12,30 @@ import { useState } from "react";
 // Mock data
 const eventData = {
   id: "1",
-  title: "Product Launch Event",
+  title: "Evento de Lançamento do Produto",
   date: "2024-06-20 14:00",
-  status: "Planned" as const,
-  organizer: "John Doe",
-  location: "Conference Hall A",
-  description: "This is a major product launch event where we will showcase our latest innovations to clients and stakeholders. The event will include presentations, demonstrations, and networking opportunities.",
+  status: "Planejado" as const,
+  organizer: "João Silva",
+  location: "Sala de Conferências A",
+  description: "Este é um grande evento de lançamento de produto onde apresentaremos nossas últimas inovações para clientes e stakeholders. O evento incluirá apresentações, demonstrações e oportunidades de networking.",
   hasContract: true,
   contractValue: 15000,
   isValueReceived: false,
-  attachments: ["event_proposal.pdf", "venue_contract.pdf", "speaker_list.xlsx"]
+  attachments: ["proposta_evento.pdf", "contrato_local.pdf", "lista_palestrantes.xlsx"]
 };
 
 const eventTasks = [
-  { id: "1", title: "Prepare presentation slides", status: "In Progress" as const, deadline: "2024-06-18", assignee: "Alice Brown" },
-  { id: "2", title: "Send invitations", status: "Done" as const, deadline: "2024-06-10", assignee: "Bob Wilson" },
-  { id: "3", title: "Book catering", status: "To Do" as const, deadline: "2024-06-15", assignee: "Carol Davis" },
-  { id: "4", title: "Setup AV equipment", status: "To Do" as const, deadline: "2024-06-19", assignee: "David Miller" }
+  { id: "1", title: "Preparar slides da apresentação", status: "Em Andamento" as const, deadline: "2024-06-18", assignee: "Alice Brown" },
+  { id: "2", title: "Enviar convites", status: "Concluído" as const, deadline: "2024-06-10", assignee: "Bob Wilson" },
+  { id: "3", title: "Reservar catering", status: "A Fazer" as const, deadline: "2024-06-15", assignee: "Carol Davis" },
+  { id: "4", title: "Configurar equipamentos AV", status: "A Fazer" as const, deadline: "2024-06-19", assignee: "David Miller" }
 ];
 
 const statusColors = {
-  "Planned": "bg-blue-100 text-blue-800",
-  "In Progress": "bg-yellow-100 text-yellow-800",
-  "Completed": "bg-green-100 text-green-800",
-  "Cancelled": "bg-red-100 text-red-800"
+  "Planejado": "bg-blue-100 text-blue-800",
+  "Em Andamento": "bg-yellow-100 text-yellow-800",
+  "Concluído": "bg-green-100 text-green-800",
+  "Cancelado": "bg-red-100 text-red-800"
 };
 
 export default function EventDetail() {
