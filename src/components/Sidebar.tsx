@@ -13,19 +13,22 @@ import {
   X
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useNotifications } from "@/hooks/useNotifications";
+import { NotificationBadge } from "./NotificationBadge";
 
 const navigationItems = [
-  { name: "Dashboard", href: "/", icon: LayoutDashboard },
-  { name: "Events", href: "/events", icon: Calendar },
-  { name: "Projects", href: "/projects", icon: FolderOpen },
-  { name: "Finance", href: "/finance", icon: DollarSign },
-  { name: "Feed", href: "/feed", icon: MessageSquare },
-  { name: "Collaborators", href: "/collaborators", icon: Users },
-  { name: "Visual Maps", href: "/visual-maps", icon: FileText },
+  { name: "Dashboard", href: "/", icon: LayoutDashboard, notificationType: null },
+  { name: "Events", href: "/events", icon: Calendar, notificationType: "event" as const },
+  { name: "Projects", href: "/projects", icon: FolderOpen, notificationType: "project" as const },
+  { name: "Finance", href: "/finance", icon: DollarSign, notificationType: "finance" as const },
+  { name: "Feed", href: "/feed", icon: MessageSquare, notificationType: "feed" as const },
+  { name: "Collaborators", href: "/collaborators", icon: Users, notificationType: "collaborator" as const },
+  { name: "Visual Maps", href: "/visual-maps", icon: FileText, notificationType: null },
 ];
 
 export function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
+  const { getUnreadCountByType } = useNotifications();
 
   return (
     <>
@@ -63,7 +66,7 @@ export function Sidebar() {
                 onClick={() => setIsOpen(false)}
                 className={({ isActive }) =>
                   cn(
-                    "flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors",
+                    "flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors relative",
                     isActive
                       ? "bg-blue-600 text-white"
                       : "text-slate-300 hover:bg-slate-800 hover:text-white"
@@ -72,6 +75,12 @@ export function Sidebar() {
               >
                 <item.icon className="mr-3 h-5 w-5" />
                 {item.name}
+                {item.notificationType && (
+                  <NotificationBadge 
+                    count={getUnreadCountByType(item.notificationType)} 
+                    className="ml-auto"
+                  />
+                )}
               </NavLink>
             ))}
           </div>
