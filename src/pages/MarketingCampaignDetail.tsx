@@ -20,10 +20,10 @@ const campaignData = {
 };
 
 const marketingTasks = [
-  { id: "1", title: "Criar posts para Instagram", status: "Concluído", deadline: "2024-06-18", assignee: "Alice Brown", type: "Postagem social" },
-  { id: "2", title: "Produzir vídeo promocional", status: "Em Andamento", deadline: "2024-06-20", assignee: "Bob Wilson", type: "Vídeo" },
-  { id: "3", title: "Design de anúncios Facebook", status: "A Fazer", deadline: "2024-06-22", assignee: "Carol Davis", type: "Anúncio" },
-  { id: "4", title: "Newsletter de lançamento", status: "A Fazer", deadline: "2024-06-25", assignee: "David Miller", type: "E-mail" }
+  { id: "1", title: "Criar posts para Instagram", status: "Concluído" as const, deadline: "2024-06-18", assignee: "Alice Brown", type: "Postagem social" },
+  { id: "2", title: "Produzir vídeo promocional", status: "Em Andamento" as const, deadline: "2024-06-20", assignee: "Bob Wilson", type: "Vídeo" },
+  { id: "3", title: "Design de anúncios Facebook", status: "A Fazer" as const, deadline: "2024-06-22", assignee: "Carol Davis", type: "Anúncio" },
+  { id: "4", title: "Newsletter de lançamento", status: "A Fazer" as const, deadline: "2024-06-25", assignee: "David Miller", type: "E-mail" }
 ];
 
 const statusColors = {

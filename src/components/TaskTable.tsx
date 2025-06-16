@@ -5,6 +5,7 @@ interface Task {
   status: "A Fazer" | "Em Andamento" | "Concluído";
   deadline: string;
   assignee: string;
+  type?: string; // Add optional type property for marketing tasks
 }
 
 interface TaskTableProps {
@@ -36,6 +37,11 @@ export function TaskTable({ tasks, onTaskClick }: TaskTableProps) {
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Prazo
             </th>
+            {tasks.some(task => task.type) && (
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Tipo
+              </th>
+            )}
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
@@ -59,6 +65,11 @@ export function TaskTable({ tasks, onTaskClick }: TaskTableProps) {
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                 {task.deadline}
               </td>
+              {tasks.some(task => task.type) && (
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  {task.type || '-'}
+                </td>
+              )}
             </tr>
           ))}
         </tbody>
