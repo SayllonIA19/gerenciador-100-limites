@@ -85,13 +85,6 @@ export function Sidebar() {
             ))}
           </div>
         </nav>
-        
-        <div className="absolute bottom-4 left-4 right-4">
-          <div className="bg-slate-800 rounded-lg p-4">
-            <p className="text-xs text-slate-400">Logged in as</p>
-            <p className="text-sm font-medium">Admin User</p>
-          </div>
-        </div>
       </div>
     </>
   );
