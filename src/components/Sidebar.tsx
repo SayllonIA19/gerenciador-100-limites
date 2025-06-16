@@ -10,7 +10,10 @@ import {
   Users, 
   FileText,
   Menu,
-  X
+  X,
+  Megaphone,
+  Music,
+  Zap
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useNotifications } from "@/hooks/useNotifications";
@@ -24,6 +27,9 @@ const navigationItems = [
   { name: "Feed", href: "/feed", icon: MessageSquare, notificationType: "feed" as const },
   { name: "Collaborators", href: "/collaborators", icon: Users, notificationType: "collaborator" as const },
   { name: "Visual Maps", href: "/visual-maps", icon: FileText, notificationType: null },
+  { name: "Marketing", href: "/marketing", icon: Megaphone, notificationType: null },
+  { name: "Music Production", href: "/music", icon: Music, notificationType: null },
+  { name: "Dance", href: "/dance", icon: Zap, notificationType: null },
 ];
 
 export function Sidebar() {
