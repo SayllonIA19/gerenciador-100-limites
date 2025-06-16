@@ -1,12 +1,12 @@
-
 import { Layout } from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Plus, Search, Mail, Phone, Download } from "lucide-react";
+import { Plus, Search, Download } from "lucide-react";
 import { useState } from "react";
+import { CollaboratorModal } from "@/components/CollaboratorModal";
 
 // Mock data
 const effectiveCollaborators = [
@@ -80,34 +80,33 @@ const participantCollaborators = [
   }
 ];
 
-function CollaboratorRow({ collaborator, onExport }: { collaborator: any, onExport: () => void }) {
+function CollaboratorCard({ collaborator, onExport, onClick }: { 
+  collaborator: any, 
+  onExport: () => void,
+  onClick: () => void 
+}) {
   return (
-    <div className="flex items-center justify-between p-4 border-b hover:bg-gray-50">
-      <div className="flex items-center space-x-4">
+    <div className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 cursor-pointer">
+      <div className="flex items-center space-x-4" onClick={onClick}>
         <Avatar className="h-12 w-12">
           <AvatarImage src={collaborator.photo} />
           <AvatarFallback className="bg-blue-100 text-blue-600 font-medium">
             {collaborator.fullName.split(' ').map((n: string) => n[0]).join('')}
           </AvatarFallback>
         </Avatar>
-        <div className="flex-1">
-          <div className="flex items-center space-x-3 mb-1">
-            <h3 className="font-medium text-gray-900">{collaborator.fullName}</h3>
-            <Badge variant="secondary">{collaborator.function}</Badge>
-          </div>
-          <div className="flex items-center space-x-4 text-sm text-gray-500">
-            <div className="flex items-center space-x-1">
-              <Mail className="h-3 w-3" />
-              <span>{collaborator.email}</span>
-            </div>
-            <div className="flex items-center space-x-1">
-              <Phone className="h-3 w-3" />
-              <span>{collaborator.phone}</span>
-            </div>
-          </div>
+        <div>
+          <h3 className="font-medium text-gray-900">{collaborator.fullName}</h3>
+          <Badge variant="secondary" className="mt-1">{collaborator.function}</Badge>
         </div>
       </div>
-      <Button variant="outline" size="sm" onClick={onExport}>
+      <Button 
+        variant="outline" 
+        size="sm" 
+        onClick={(e) => {
+          e.stopPropagation();
+          onExport();
+        }}
+      >
         <Download className="h-4 w-4 mr-2" />
         Export
       </Button>
@@ -117,6 +116,8 @@ function CollaboratorRow({ collaborator, onExport }: { collaborator: any, onExpo
 
 export default function Collaborators() {
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCollaborator, setSelectedCollaborator] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const allCollaborators = [...effectiveCollaborators, ...participantCollaborators];
   const filteredEffective = effectiveCollaborators.filter(collaborator =>
@@ -134,6 +135,11 @@ export default function Collaborators() {
   const handleExport = (collaborator: any) => {
     // This would generate and download a file with collaborator information
     console.log('Exporting collaborator:', collaborator.fullName);
+  };
+
+  const handleCollaboratorClick = (collaborator: any) => {
+    setSelectedCollaborator(collaborator);
+    setIsModalOpen(true);
   };
 
   return (
@@ -174,16 +180,15 @@ export default function Collaborators() {
             <CardTitle className="text-xl text-green-700">Effective Collaborators</CardTitle>
             <p className="text-sm text-gray-600">Team members who are part of the company</p>
           </CardHeader>
-          <CardContent className="p-0">
-            <div className="divide-y">
-              {filteredEffective.map((collaborator) => (
-                <CollaboratorRow 
-                  key={collaborator.id} 
-                  collaborator={collaborator}
-                  onExport={() => handleExport(collaborator)}
-                />
-              ))}
-            </div>
+          <CardContent className="space-y-4">
+            {filteredEffective.map((collaborator) => (
+              <CollaboratorCard 
+                key={collaborator.id} 
+                collaborator={collaborator}
+                onExport={() => handleExport(collaborator)}
+                onClick={() => handleCollaboratorClick(collaborator)}
+              />
+            ))}
             {filteredEffective.length === 0 && (
               <div className="p-8 text-center text-gray-500">
                 No effective collaborators found.
@@ -198,16 +203,15 @@ export default function Collaborators() {
             <CardTitle className="text-xl text-blue-700">Participant Collaborators</CardTitle>
             <p className="text-sm text-gray-600">External collaborators participating in projects</p>
           </CardHeader>
-          <CardContent className="p-0">
-            <div className="divide-y">
-              {filteredParticipants.map((collaborator) => (
-                <CollaboratorRow 
-                  key={collaborator.id} 
-                  collaborator={collaborator}
-                  onExport={() => handleExport(collaborator)}
-                />
-              ))}
-            </div>
+          <CardContent className="space-y-4">
+            {filteredParticipants.map((collaborator) => (
+              <CollaboratorCard 
+                key={collaborator.id} 
+                collaborator={collaborator}
+                onExport={() => handleExport(collaborator)}
+                onClick={() => handleCollaboratorClick(collaborator)}
+              />
+            ))}
             {filteredParticipants.length === 0 && (
               <div className="p-8 text-center text-gray-500">
                 No participant collaborators found.
@@ -215,6 +219,12 @@ export default function Collaborators() {
             )}
           </CardContent>
         </Card>
+
+        <CollaboratorModal 
+          collaborator={selectedCollaborator}
+          open={isModalOpen}
+          onOpenChange={setIsModalOpen}
+        />
       </div>
     </Layout>
   );

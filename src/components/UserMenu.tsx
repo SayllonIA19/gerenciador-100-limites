@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { LogOut, Settings, User } from "lucide-react";
+import { LogOut, Settings, User, Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -13,11 +13,12 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export function UserMenu() {
   const [open, setOpen] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(false);
 
   // Mock user data - will be replaced with real user data from authentication
   const user = {
     name: "Admin User",
-    email: "admin@projecthub.com",
+    email: "admin@100limits.com",
     avatar: "/placeholder.svg"
   };
 
@@ -37,6 +38,19 @@ export function UserMenu() {
     // TODO: Navigate to account/profile page
     console.log("Account clicked");
     setOpen(false);
+  };
+
+  const toggleDarkMode = () => {
+    const newDarkMode = !isDarkMode;
+    setIsDarkMode(newDarkMode);
+    
+    if (newDarkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+    
+    console.log("Dark mode toggled:", newDarkMode);
   };
 
   return (
@@ -66,6 +80,10 @@ export function UserMenu() {
         <DropdownMenuItem onClick={handleSettings} className="cursor-pointer">
           <Settings className="mr-2 h-4 w-4" />
           <span>Configurações</span>
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={toggleDarkMode} className="cursor-pointer">
+          {isDarkMode ? <Sun className="mr-2 h-4 w-4" /> : <Moon className="mr-2 h-4 w-4" />}
+          <span>{isDarkMode ? 'Modo Claro' : 'Modo Noturno'}</span>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleLogout} className="cursor-pointer">

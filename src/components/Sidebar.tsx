@@ -54,7 +54,7 @@ export function Sidebar() {
         isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
       )}>
         <div className="flex items-center justify-center h-16 bg-slate-800">
-          <h1 className="text-xl font-bold">ProjectHub</h1>
+          <h1 className="text-xl font-bold">100 Limits</h1>
         </div>
         
         <nav className="mt-8">
