@@ -8,6 +8,7 @@ import Dashboard from "./pages/Dashboard";
 import Events from "./pages/Events";
 import EventDetail from "./pages/EventDetail";
 import Projects from "./pages/Projects";
+import ProjectManager from "./pages/ProjectManager";
 import Finance from "./pages/Finance";
 import Feed from "./pages/Feed";
 import Collaborators from "./pages/Collaborators";
@@ -38,6 +39,7 @@ const App = () => (
           <Route path="/events" element={<Events />} />
           <Route path="/events/:id" element={<EventDetail />} />
           <Route path="/projects" element={<Projects />} />
+          <Route path="/project-manager" element={<ProjectManager />} />
           <Route path="/finance" element={<Finance />} />
           <Route path="/feed" element={<Feed />} />
           <Route path="/collaborators" element={<Collaborators />} />
