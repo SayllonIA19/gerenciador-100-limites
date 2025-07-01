@@ -47,17 +47,24 @@ export function useProjects() {
     }
   };
 
-  const saveProject = async (projectData: Partial<Project>) => {
+  const saveProject = async (projectData: Omit<Project, 'id' | 'created_at' | 'updated_at'> & { id?: string }) => {
     if (!user) return;
 
     try {
+      // Ensure title is provided
+      if (!projectData.title) {
+        throw new Error('Title is required');
+      }
+
+      const dataToSave = {
+        ...projectData,
+        user_id: user.id,
+        updated_at: new Date().toISOString(),
+      };
+
       const { data, error } = await supabase
         .from('projects')
-        .upsert({
-          ...projectData,
-          user_id: user.id,
-          updated_at: new Date().toISOString(),
-        })
+        .upsert(dataToSave)
         .select()
         .single();
 
