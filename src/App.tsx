@@ -4,6 +4,8 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "@/contexts/AuthContext";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
 import Dashboard from "./pages/Dashboard";
 import Events from "./pages/Events";
 import EventDetail from "./pages/EventDetail";
@@ -33,31 +35,113 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/events" element={<Events />} />
-          <Route path="/events/:id" element={<EventDetail />} />
-          <Route path="/projects" element={<Projects />} />
-          <Route path="/project-manager" element={<ProjectManager />} />
-          <Route path="/finance" element={<Finance />} />
-          <Route path="/feed" element={<Feed />} />
-          <Route path="/collaborators" element={<Collaborators />} />
-          <Route path="/visual-maps" element={<VisualMaps />} />
-          <Route path="/marketing" element={<Marketing />} />
-          <Route path="/marketing/campaigns/:id" element={<MarketingCampaignDetail />} />
-          <Route path="/music" element={<MusicProduction />} />
-          <Route path="/music/tracks" element={<MusicTracks />} />
-          <Route path="/music/tracks/:id" element={<TrackDetail />} />
-          <Route path="/music/eps" element={<MusicEPs />} />
-          <Route path="/music/albums" element={<MusicAlbums />} />
-          <Route path="/dance" element={<Dance />} />
-          <Route path="/dance/choreographies" element={<DanceChoreographies />} />
-          <Route path="/dance/choreographies/:id" element={<ChoreographyDetail />} />
-          <Route path="/dance/calendar" element={<DanceCalendar />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
+      <AuthProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            } />
+            <Route path="/events" element={
+              <ProtectedRoute>
+                <Events />
+              </ProtectedRoute>
+            } />
+            <Route path="/events/:id" element={
+              <ProtectedRoute>
+                <EventDetail />
+              </ProtectedRoute>
+            } />
+            <Route path="/projects" element={
+              <ProtectedRoute>
+                <Projects />
+              </ProtectedRoute>
+            } />
+            <Route path="/project-manager" element={
+              <ProtectedRoute>
+                <ProjectManager />
+              </ProtectedRoute>
+            } />
+            <Route path="/finance" element={
+              <ProtectedRoute>
+                <Finance />
+              </ProtectedRoute>
+            } />
+            <Route path="/feed" element={
+              <ProtectedRoute>
+                <Feed />
+              </ProtectedRoute>
+            } />
+            <Route path="/collaborators" element={
+              <ProtectedRoute>
+                <Collaborators />
+              </ProtectedRoute>
+            } />
+            <Route path="/visual-maps" element={
+              <ProtectedRoute>
+                <VisualMaps />
+              </ProtectedRoute>
+            } />
+            <Route path="/marketing" element={
+              <ProtectedRoute>
+                <Marketing />
+              </ProtectedRoute>
+            } />
+            <Route path="/marketing/campaigns/:id" element={
+              <ProtectedRoute>
+                <MarketingCampaignDetail />
+              </ProtectedRoute>
+            } />
+            <Route path="/music" element={
+              <ProtectedRoute>
+                <MusicProduction />
+              </ProtectedRoute>
+            } />
+            <Route path="/music/tracks" element={
+              <ProtectedRoute>
+                <MusicTracks />
+              </ProtectedRoute>
+            } />
+            <Route path="/music/tracks/:id" element={
+              <ProtectedRoute>
+                <TrackDetail />
+              </ProtectedRoute>
+            } />
+            <Route path="/music/eps" element={
+              <ProtectedRoute>
+                <MusicEPs />
+              </ProtectedRoute>
+            } />
+            <Route path="/music/albums" element={
+              <ProtectedRoute>
+                <MusicAlbums />
+              </ProtectedRoute>
+            } />
+            <Route path="/dance" element={
+              <ProtectedRoute>
+                <Dance />
+              </ProtectedRoute>
+            } />
+            <Route path="/dance/choreographies" element={
+              <ProtectedRoute>
+                <DanceChoreographies />
+              </ProtectedRoute>
+            } />
+            <Route path="/dance/choreographies/:id" element={
+              <ProtectedRoute>
+                <ChoreographyDetail />
+              </ProtectedRoute>
+            } />
+            <Route path="/dance/calendar" element={
+              <ProtectedRoute>
+                <DanceCalendar />
+              </ProtectedRoute>
+            } />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );

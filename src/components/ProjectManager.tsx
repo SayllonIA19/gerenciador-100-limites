@@ -1,6 +1,5 @@
-
-import React, { useState } from 'react';
-import { Calendar, User, DollarSign, Plus, Edit3 } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Calendar, User, DollarSign, Plus, Save, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -11,15 +10,18 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Calendar as CalendarComponent } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { format } from 'date-fns';
+import { useAuth } from '@/contexts/AuthContext';
+import { useProjects } from '@/hooks/useProjects';
 
 interface ProjectData {
+  id?: string;
   title: string;
   subtitle: string;
-  startDate: Date | undefined;
-  dueDate: Date | undefined;
+  start_date: Date | undefined;
+  due_date: Date | undefined;
   status: string;
   priority: string;
-  assignedTo: string;
+  assigned_to: string;
   budget: string;
   progress: number;
 }
@@ -39,22 +41,33 @@ const priorityConfig = {
 };
 
 export function ProjectManager() {
+  const { user, signOut } = useAuth();
+  const { projects, saveProject } = useProjects();
   const [project, setProject] = useState<ProjectData>({
     title: "Nova Campanha de Marketing",
     subtitle: "Campanha de lançamento do produto Q3 2024",
-    startDate: new Date(),
-    dueDate: undefined,
+    start_date: new Date(),
+    due_date: undefined,
     status: "Planning",
     priority: "High",
-    assignedTo: "João Silva",
+    assigned_to: user?.email || "João Silva",
     budget: "15000",
     progress: 25
   });
 
-  const [isEditing, setIsEditing] = useState<string | null>(null);
-
   const updateProject = (field: keyof ProjectData, value: any) => {
     setProject(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleSave = async () => {
+    const projectToSave = {
+      ...project,
+      budget: project.budget ? parseFloat(project.budget) : null,
+      start_date: project.start_date?.toISOString().split('T')[0] || null,
+      due_date: project.due_date?.toISOString().split('T')[0] || null,
+    };
+    
+    await saveProject(projectToSave);
   };
 
   const DatePicker = ({ 
@@ -91,7 +104,23 @@ export function ProjectManager() {
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-4xl mx-auto">
-        {/* Header Section */}
+        {/* Header with user info and logout */}
+        <div className="flex justify-between items-center mb-6">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">100 Limites 💯</h1>
+            <p className="text-gray-600">Bem-vindo, {user?.email}</p>
+          </div>
+          <Button 
+            onClick={signOut}
+            variant="outline"
+            className="flex items-center gap-2"
+          >
+            <LogOut className="h-4 w-4" />
+            Sair
+          </Button>
+        </div>
+
+        {/* Project Title Section */}
         <div className="mb-8">
           <div className="mb-2">
             <Input
@@ -112,7 +141,13 @@ export function ProjectManager() {
         {/* Main Content Area */}
         <Card className="shadow-sm border border-gray-200">
           <CardHeader className="pb-6">
-            <h2 className="text-xl font-semibold text-gray-900">Detalhes do Projeto</h2>
+            <div className="flex justify-between items-center">
+              <h2 className="text-xl font-semibold text-gray-900">Detalhes do Projeto</h2>
+              <Button onClick={handleSave} className="flex items-center gap-2">
+                <Save className="h-4 w-4" />
+                Salvar Projeto
+              </Button>
+            </div>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -122,8 +157,8 @@ export function ProjectManager() {
                 <div className="space-y-2">
                   <Label className="text-sm font-medium text-gray-700">Data de Início</Label>
                   <DatePicker
-                    date={project.startDate}
-                    onSelect={(date) => updateProject('startDate', date)}
+                    date={project.start_date}
+                    onSelect={(date) => updateProject('start_date', date)}
                     placeholder="Selecionar data"
                   />
                 </div>
@@ -132,8 +167,8 @@ export function ProjectManager() {
                 <div className="space-y-2">
                   <Label className="text-sm font-medium text-gray-700">Data de Entrega</Label>
                   <DatePicker
-                    date={project.dueDate}
-                    onSelect={(date) => updateProject('dueDate', date)}
+                    date={project.due_date}
+                    onSelect={(date) => updateProject('due_date', date)}
                     placeholder="Selecionar data"
                   />
                 </div>
@@ -201,8 +236,8 @@ export function ProjectManager() {
                       <User className="h-4 w-4 text-blue-600" />
                     </div>
                     <Input
-                      value={project.assignedTo}
-                      onChange={(e) => updateProject('assignedTo', e.target.value)}
+                      value={project.assigned_to}
+                      onChange={(e) => updateProject('assigned_to', e.target.value)}
                       className="border-none p-0 h-auto bg-transparent"
                       placeholder="Nome do responsável"
                     />
