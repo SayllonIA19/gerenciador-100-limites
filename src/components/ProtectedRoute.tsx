@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { LoginForm } from '@/components/LoginForm';
+import { Navigate } from 'react-router-dom';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -22,7 +22,7 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
   }
 
   if (!user) {
-    return <LoginForm />;
+    return <Navigate to="/auth" replace />;
   }
 
   return <>{children}</>;

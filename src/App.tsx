@@ -27,6 +27,7 @@ import DanceChoreographies from "./pages/DanceChoreographies";
 import DanceCalendar from "./pages/DanceCalendar";
 import ChoreographyDetail from "./pages/ChoreographyDetail";
 import NotFound from "./pages/NotFound";
+import Auth from "./pages/Auth";
 
 const queryClient = new QueryClient();
 
@@ -38,6 +39,7 @@ const App = () => (
       <AuthProvider>
         <BrowserRouter>
           <Routes>
+            <Route path="/auth" element={<Auth />} />
             <Route path="/" element={
               <ProtectedRoute>
                 <Dashboard />

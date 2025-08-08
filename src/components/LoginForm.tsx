@@ -6,24 +6,49 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { useAuth } from '@/contexts/AuthContext';
 import { Eye, EyeOff } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/components/ui/use-toast';
 
 export function LoginForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isSignup, setIsSignup] = useState(false);
   const { signIn } = useAuth();
+  const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    
-    const { error } = await signIn(email, password);
-    
-    if (!error) {
-      // Success - user will be redirected automatically via AuthContext
+
+    if (isSignup) {
+      const redirectUrl = `${window.location.origin}/`;
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: { emailRedirectTo: redirectUrl }
+      });
+
+      if (error) {
+        toast({
+          title: "Erro no cadastro",
+          description: error.message,
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Cadastro realizado",
+          description: "Verifique seu e-mail para confirmar a conta.",
+        });
+      }
+    } else {
+      const { error } = await signIn(email, password);
+      if (!error) {
+        // AuthContext cuidará do redirecionamento
+      }
     }
-    
+
     setIsLoading(false);
   };
 
@@ -42,7 +67,7 @@ export function LoginForm() {
               Bem-vindo à Academia Lendár[LA]
             </h1>
             <p className="text-gray-300">
-              Digite o seu e-mail abaixo para continuar.
+              {isSignup ? "Crie sua conta com e-mail e senha." : "Digite o seu e-mail abaixo para continuar."}
             </p>
           </div>
 
@@ -95,9 +120,20 @@ export function LoginForm() {
               disabled={isLoading}
               className="w-full bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-md transition-colors"
             >
-              {isLoading ? "Entrando..." : "Continuar com E-mail"}
+              {isLoading ? (isSignup ? "Cadastrando..." : "Entrando...") : (isSignup ? "Criar conta" : "Continuar com E-mail")}
             </Button>
           </form>
+
+          <div className="text-center text-sm text-gray-400">
+            {isSignup ? "Já tem uma conta?" : "Novo por aqui?"}{' '}
+            <button
+              type="button"
+              onClick={() => setIsSignup(!isSignup)}
+              className="text-red-500 hover:text-red-400 underline"
+            >
+              {isSignup ? "Entrar" : "Criar conta"}
+            </button>
+          </div>
 
           <div className="text-center text-sm text-gray-400">
             Ao continuar, você concorda com nossos{' '}
