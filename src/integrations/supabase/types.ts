@@ -37,7 +37,7 @@ export type Database = {
           created_at: string
           description: string | null
           id: string
-          name: string
+          name: string | null
           role_id: string | null
           updated_at: string
         }
@@ -45,7 +45,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           id?: string
-          name: string
+          name?: string | null
           role_id?: string | null
           updated_at?: string
         }
@@ -53,7 +53,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           id?: string
-          name?: string
+          name?: string | null
           role_id?: string | null
           updated_at?: string
         }
