@@ -14,12 +14,31 @@ export type Database = {
   }
   public: {
     Tables: {
+      permissions: {
+        Row: {
+          created_at: string | null
+          id: string
+          name: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          name: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
           description: string | null
           id: string
           name: string
+          role_id: string | null
           updated_at: string
         }
         Insert: {
@@ -27,6 +46,7 @@ export type Database = {
           description?: string | null
           id?: string
           name: string
+          role_id?: string | null
           updated_at?: string
         }
         Update: {
@@ -34,9 +54,51 @@ export type Database = {
           description?: string | null
           id?: string
           name?: string
+          role_id?: string | null
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "profiles_role_id_fkey"
+            columns: ["role_id"]
+            isOneToOne: false
+            referencedRelation: "roles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      role_permissions: {
+        Row: {
+          created_at: string | null
+          permission_id: string
+          role_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          permission_id: string
+          role_id: string
+        }
+        Update: {
+          created_at?: string | null
+          permission_id?: string
+          role_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "role_permissions_permission_id_fkey"
+            columns: ["permission_id"]
+            isOneToOne: false
+            referencedRelation: "permissions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "role_permissions_role_id_fkey"
+            columns: ["role_id"]
+            isOneToOne: false
+            referencedRelation: "roles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       roles: {
         Row: {
@@ -56,41 +118,67 @@ export type Database = {
         }
         Relationships: []
       }
-      user_profiles: {
+      team_members: {
         Row: {
-          created_at: string
-          id: string
+          created_at: string | null
           profile_id: string
-          role_id: string | null
-          user_id: string
+          role_in_team: string | null
+          team_id: string
         }
         Insert: {
-          created_at?: string
-          id?: string
+          created_at?: string | null
           profile_id: string
-          role_id?: string | null
-          user_id: string
+          role_in_team?: string | null
+          team_id: string
         }
         Update: {
-          created_at?: string
-          id?: string
+          created_at?: string | null
           profile_id?: string
-          role_id?: string | null
-          user_id?: string
+          role_in_team?: string | null
+          team_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "user_profiles_profile_id_fkey"
+            foreignKeyName: "team_members_profile_id_fkey"
             columns: ["profile_id"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "user_profiles_role_id_fkey"
-            columns: ["role_id"]
+            foreignKeyName: "team_members_team_id_fkey"
+            columns: ["team_id"]
             isOneToOne: false
-            referencedRelation: "roles"
+            referencedRelation: "teams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      teams: {
+        Row: {
+          created_at: string | null
+          id: string
+          name: string
+          profile_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          name: string
+          profile_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          name?: string
+          profile_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "teams_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
