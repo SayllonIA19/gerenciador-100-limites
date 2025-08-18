@@ -1,4 +1,4 @@
-# Welcome to your Lovable project
+# Welcome to Project 100 Limites!!
 
 ## Project info
 
