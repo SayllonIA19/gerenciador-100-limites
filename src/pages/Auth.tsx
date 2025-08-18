@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { Eye, EyeOff } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/components/ui/use-toast';
 import limitesLogo from '@/assets/limites-logo.png';
+import { Eye, EyeOff } from 'lucide-react';
+import logo100 from '@/assets/img/login/logo.png';
+
+
 
 const Auth = () => {
   const { user, signIn } = useAuth();
@@ -58,91 +59,59 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white p-4">
-      <div className="w-full max-w-md bg-white rounded-lg shadow-lg p-8 border border-gray-200">
-        {/* Logo */}
-        <div className="flex justify-center mb-6">
-          <img 
-            src={limitesLogo} 
-            alt="100 Limites Logo" 
-            className="w-20 h-20 rounded-full"
-          />
+    <div className="min-h-screen flex items-center justify-center bg-white bg-gradient-radial from-blue-200/20 via-transparent">
+      <div className="login-card bg-[#111] border border-blue-600/60 rounded-lg p-8 max-w-md w-full shadow-[0_0_25px_rgba(37,99,235,0.4)]">
+        {/* Header */}
+        <div className="login-header text-center mb-6">
+          <img src={logo100} alt="Logo 100 Limites" className="w-1/2 mb-4 mx-auto" />
+          <p className="text-white text-lg">Acesse sua conta</p>
         </div>
 
-        {/* Title */}
-        <h1 className="text-2xl font-bold text-center text-gray-900 mb-8">
-          100 Limites
-        </h1>
-
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Email Input */}
-          <div>
-            <Input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Email"
-              className="w-full shadow-sm border-gray-300 focus:border-blue-500 focus:ring-blue-500"
-              required
-            />
-          </div>
-
-          {/* Password Input */}
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="login-input px-4 py-3 rounded-md text-black border-2 border-transparent focus:border-blue-600 focus:shadow-[0_0_8px_rgba(37,99,235,0.6)] outline-none"
+            required
+          />
           <div className="relative">
-            <Input
-              id="password"
-              type={showPassword ? "text" : "password"}
+            <input
+              type={showPassword ? 'text' : 'password'}
+              placeholder="Senha"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Senha"
-              className="w-full shadow-sm pr-10 border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+              className="login-input w-full px-4 py-3 rounded-md text-black border-2 border-transparent focus:border-blue-600 focus:shadow-[0_0_8px_rgba(37,99,235,0.6)] outline-none pr-10"
               required
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
+              className="absolute inset-y-0 right-2 flex items-center text-gray-400 hover:text-gray-200"
             >
-              {showPassword ? (
-                <EyeOff className="h-4 w-4" />
-              ) : (
-                <Eye className="h-4 w-4" />
-              )}
+              {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
             </button>
           </div>
 
-          {/* Login Button */}
-          <Button
+          <button
             type="submit"
             disabled={isLoading}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium shadow-sm"
+            className={`login-button bg-blue-600 text-white font-bold py-3 rounded-md transition-all duration-200 hover:shadow-[0_0_15px_rgba(255,0,0,0.6)] hover:bg-red-600 ${isLoading ? 'opacity-70 cursor-not-allowed' : ''
+              }`}
           >
-            {isLoading ? (isSignup ? "Cadastrando..." : "Entrando...") : (isSignup ? "Criar conta" : "Entrar")}
-          </Button>
+            {isLoading ? (isSignup ? 'Cadastrando...' : 'Entrando...') : (isSignup ? 'Criar conta' : 'Entrar')}
+          </button>
         </form>
 
-        {/* Forgot Password Link */}
-        <div className="text-center mt-4">
-          <a 
-            href="#" 
-            className="text-sm text-gray-600 hover:text-gray-800 underline"
-          >
-            Esqueceu sua senha?
+        {/* Links */}
+        <div className="forgot-password mt-4 text-center text-sm">
+          <a href="#" className="forgot-password-link text-gray-300 hover:text-blue-600">
+            Esqueceu a senha?
           </a>
         </div>
 
-        {/* Sign up toggle */}
-        <div className="text-center text-sm text-gray-600 mt-6">
-          {isSignup ? "Já tem uma conta?" : "Novo por aqui?"}{' '}
-          <button
-            type="button"
-            onClick={() => setIsSignup(!isSignup)}
-            className="text-blue-600 hover:text-blue-700 underline"
-          >
-            {isSignup ? "Entrar" : "Criar conta"}
-          </button>
-        </div>
       </div>
     </div>
   );
