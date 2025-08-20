@@ -26,6 +26,8 @@ import Dance from "./pages/Dance";
 import DanceChoreographies from "./pages/DanceChoreographies";
 import DanceCalendar from "./pages/DanceCalendar";
 import ChoreographyDetail from "./pages/ChoreographyDetail";
+import TecnologiaSugestoes from "./pages/tecnologia/TecnologiaSugestoes";
+import TecnologiaProjetos from "./pages/tecnologia/TecnologiaProjetos";
 import NotFound from "./pages/NotFound";
 import Auth from "./pages/Auth";
 
@@ -138,6 +140,16 @@ const App = () => (
             <Route path="/dance/calendar" element={
               <ProtectedRoute>
                 <DanceCalendar />
+              </ProtectedRoute>
+            } />
+            <Route path="/tecnologia/sugestoes" element={
+              <ProtectedRoute>
+                <TecnologiaSugestoes />
+              </ProtectedRoute>
+            } />
+            <Route path="/tecnologia/projetos" element={
+              <ProtectedRoute>
+                <TecnologiaProjetos />
               </ProtectedRoute>
             } />
             <Route path="*" element={<NotFound />} />
