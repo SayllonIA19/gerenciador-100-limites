@@ -1,13 +1,13 @@
 
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
-import { 
-  LayoutDashboard, 
-  Calendar, 
-  FolderOpen, 
-  DollarSign, 
-  MessageSquare, 
-  Users, 
+import {
+  LayoutDashboard,
+  Calendar,
+  FolderOpen,
+  DollarSign,
+  MessageSquare,
+  Users,
   FileText,
   Menu,
   X,
@@ -18,6 +18,7 @@ import {
 import { cn } from "@/lib/utils";
 import { useNotifications } from "@/hooks/useNotifications";
 import { NotificationBadge } from "./NotificationBadge";
+import logo100 from '@/assets/img/login/logo.png';
 
 const navigationItems = [
   { name: "Dashboard", href: "/", icon: LayoutDashboard, notificationType: null },
@@ -41,7 +42,7 @@ export function Sidebar() {
       {/* Mobile menu button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-white rounded-md shadow-md"
+        className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-[#111] rounded-md shadow-md"
       >
         {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
       </button>
@@ -49,20 +50,24 @@ export function Sidebar() {
       {/* Overlay for mobile */}
       {isOpen && (
         <div
-          className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-40"
+          className="lg:hidden fixed inset-0 bg-[#111] bg-opacity-50 z-40"
           onClick={() => setIsOpen(false)}
         />
       )}
 
       {/* Sidebar */}
       <div className={cn(
-        "fixed lg:static inset-y-0 left-0 z-40 w-64 bg-slate-900 text-white transform transition-transform duration-300 ease-in-out",
+        "fixed lg:static inset-y-0 left-0 z-40 w-64 bg-[#111] text-white transform transition-transform duration-300 ease-in-out",
         isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
       )}>
-        <div className="flex items-center justify-center h-16 bg-slate-800">
-          <h1 className="text-xl font-bold">100 Limits</h1>
+        <div className="flex items-center justify-center h-50 bg-[#111] cursor-pointer pt-6">
+          <img
+            src={logo100}
+            alt="Logo 100 Limites"
+            className="w-40 mx-auto object-contain"
+          />
         </div>
-        
+
         <nav className="mt-8">
           <div className="px-4 space-y-2">
             {navigationItems.map((item) => (
@@ -74,7 +79,7 @@ export function Sidebar() {
                   cn(
                     "flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors relative",
                     isActive
-                      ? "bg-blue-600 text-white"
+                      ? "bg-red-600 text-white"
                       : "text-slate-300 hover:bg-slate-800 hover:text-white"
                   )
                 }
@@ -82,8 +87,8 @@ export function Sidebar() {
                 <item.icon className="mr-3 h-5 w-5" />
                 {item.name}
                 {item.notificationType && (
-                  <NotificationBadge 
-                    count={getUnreadCountByType(item.notificationType)} 
+                  <NotificationBadge
+                    count={getUnreadCountByType(item.notificationType)}
                     className="ml-auto"
                   />
                 )}
