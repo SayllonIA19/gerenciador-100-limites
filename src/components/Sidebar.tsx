@@ -13,7 +13,8 @@ import {
   X,
   Megaphone,
   Music,
-  Zap
+  Zap,
+  Code
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useNotifications } from "@/hooks/useNotifications";
@@ -31,6 +32,11 @@ const navigationItems = [
   { name: "Marketing", href: "/marketing", icon: Megaphone, notificationType: null },
   { name: "Music Production", href: "/music", icon: Music, notificationType: null },
   { name: "Dance", href: "/dance", icon: Zap, notificationType: null },
+];
+
+const technologyItems = [
+  { name: "Sugestões", href: "/tecnologia/sugestoes", icon: MessageSquare },
+  { name: "Projetos", href: "/tecnologia/projetos", icon: FolderOpen },
 ];
 
 export function Sidebar() {
@@ -94,6 +100,36 @@ export function Sidebar() {
                 )}
               </NavLink>
             ))}
+            
+            {/* Technology Section */}
+            <div className="mt-6">
+              <div className="flex items-center px-4 py-2">
+                <Code className="mr-3 h-5 w-5 text-slate-400" />
+                <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                  Tecnologia
+                </span>
+              </div>
+              <div className="mt-2 space-y-1">
+                {technologyItems.map((item) => (
+                  <NavLink
+                    key={item.name}
+                    to={item.href}
+                    onClick={() => setIsOpen(false)}
+                    className={({ isActive }) =>
+                      cn(
+                        "flex items-center px-4 py-2 ml-4 text-sm font-medium rounded-lg transition-colors",
+                        isActive
+                          ? "bg-blue-600 text-white"
+                          : "text-slate-300 hover:bg-slate-800 hover:text-white"
+                      )
+                    }
+                  >
+                    <item.icon className="mr-3 h-4 w-4" />
+                    {item.name}
+                  </NavLink>
+                ))}
+              </div>
+            </div>
           </div>
         </nav>
       </div>

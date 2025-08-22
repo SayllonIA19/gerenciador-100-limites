@@ -7,13 +7,48 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instanciate createClient with right options
+  // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: "13.0.4"
   }
   public: {
     Tables: {
+      anexos_projeto_tec: {
+        Row: {
+          descricao: string | null
+          id: string
+          projeto_id: string
+          tipo: string
+          uploaded_at: string
+          url: string
+        }
+        Insert: {
+          descricao?: string | null
+          id?: string
+          projeto_id: string
+          tipo: string
+          uploaded_at?: string
+          url: string
+        }
+        Update: {
+          descricao?: string | null
+          id?: string
+          projeto_id?: string
+          tipo?: string
+          uploaded_at?: string
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "anexos_projeto_tec_projeto_id_fkey"
+            columns: ["projeto_id"]
+            isOneToOne: false
+            referencedRelation: "projetos_tecnologia"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       permissions: {
         Row: {
           created_at: string | null
@@ -67,6 +102,45 @@ export type Database = {
           },
         ]
       }
+      projetos_tecnologia: {
+        Row: {
+          created_at: string
+          descricao: string | null
+          fim: string | null
+          id: string
+          inicio: string
+          prioridade: string
+          responsavel_id: string | null
+          status: string
+          titulo: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          descricao?: string | null
+          fim?: string | null
+          id?: string
+          inicio: string
+          prioridade?: string
+          responsavel_id?: string | null
+          status?: string
+          titulo: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          descricao?: string | null
+          fim?: string | null
+          id?: string
+          inicio?: string
+          prioridade?: string
+          responsavel_id?: string | null
+          status?: string
+          titulo?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       role_permissions: {
         Row: {
           created_at: string | null
@@ -118,6 +192,47 @@ export type Database = {
         }
         Relationships: []
       }
+      sugestoes_tecnologia: {
+        Row: {
+          created_at: string
+          criado_por_id: string
+          descricao: string
+          id: string
+          projeto_id: string | null
+          status: string
+          titulo: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          criado_por_id: string
+          descricao: string
+          id?: string
+          projeto_id?: string | null
+          status?: string
+          titulo: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          criado_por_id?: string
+          descricao?: string
+          id?: string
+          projeto_id?: string | null
+          status?: string
+          titulo?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_projeto"
+            columns: ["projeto_id"]
+            isOneToOne: false
+            referencedRelation: "projetos_tecnologia"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       team_members: {
         Row: {
           created_at: string | null
@@ -159,29 +274,18 @@ export type Database = {
           created_at: string | null
           id: string
           name: string
-          profile_id: string
         }
         Insert: {
           created_at?: string | null
           id?: string
           name: string
-          profile_id: string
         }
         Update: {
           created_at?: string | null
           id?: string
           name?: string
-          profile_id?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "teams_profile_id_fkey"
-            columns: ["profile_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
     }
     Views: {
