@@ -19,7 +19,7 @@ export function UserMenu() {
   const user = {
     name: "Admin User",
     email: "admin@100limits.com",
-    avatar: "/placeholder.svg"
+    avatar: "./avatar.png", // Placeholder avatar image path
   };
 
   const handleLogout = () => {

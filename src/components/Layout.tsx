@@ -12,6 +12,7 @@ export function Layout({ children }: LayoutProps) {
     <div className="flex h-screen bg-gray-50">
       <Sidebar />
       <main className="flex-1 lg:ml-0 overflow-auto">
+
         <div className="flex justify-end items-center gap-2 p-4 bg-white border-b lg:hidden">
           <NotificationDropdown />
           <UserMenu />
