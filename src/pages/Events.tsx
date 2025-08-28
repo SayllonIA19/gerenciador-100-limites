@@ -163,7 +163,8 @@ export default function Events() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="Baile Black">Baile Black</SelectItem>
-                <SelectItem value="Batalha">Batalha</SelectItem>
+                <SelectItem value="Batalha de Rima">Batalha de Rima</SelectItem>
+                <SelectItem value="Batalha de Break">Batalha de Break</SelectItem>
               </SelectContent>
             </Select>
             <Input
