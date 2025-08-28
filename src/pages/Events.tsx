@@ -90,7 +90,8 @@ export default function Events() {
               <SelectContent>
                 <SelectItem value="all">Todos os Tipos</SelectItem>
                 <SelectItem value="Baile Black">Baile Black</SelectItem>
-                <SelectItem value="Batalha">Batalha</SelectItem>
+                <SelectItem value="Batalha de Rima">Batalha de Rima</SelectItem>
+                <SelectItem value="Batalha de Break">Batalha de Break</SelectItem>
               </SelectContent>
             </Select>
             <div className="text-sm text-gray-500 flex items-center">
