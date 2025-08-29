@@ -8,10 +8,14 @@ interface LayoutProps {
 
 export function Layout({ children }: LayoutProps) {
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="flex h-screen bg-gray-50 overflow-hidden">
       <Sidebar />
+<<<<<<< Updated upstream
       <main className="flex-1 lg:ml-0 overflow-auto">
 
+=======
+      <main className="flex-1 lg:ml-0 flex flex-col">
+>>>>>>> Stashed changes
         <div className="flex justify-end items-center gap-2 p-4 bg-white border-b lg:hidden">
           <NotificationDropdown />
           <UserMenu />
@@ -20,6 +24,7 @@ export function Layout({ children }: LayoutProps) {
           <NotificationDropdown />
           <UserMenu />
         </div>
+        <div className="flex-1 p-6 pt-2 overflow-auto">
           {children}
         </div>
       </main>

@@ -104,6 +104,87 @@ export function LoginForm() {
                 <Eye className="h-4 w-4" />
               )}
             </button>
+=======
+    <div className="min-h-screen flex items-center justify-center bg-[#0a0a0a] p-4">
+      <Card className="w-full max-w-sm h-300px bg-[#161616] border-[#808080] shadow-2xl rounded-2x1">
+        <CardHeader className="text-center pb-2">
+          <div className="text-red-500 text-2xl font-bold mb-2 font-montserrat">
+            100 Limites 💯
+          </div>
+        </CardHeader>
+        
+        <CardContent className="space-y-6">
+          <div className="text-center space-y-2">
+            <h1 className="text-2xl font-bold text-white">
+              Bem-vindo
+            </h1>
+            <p className="text-gray-300">
+              <em>Digite o seu e-mail abaixo para continuar.</em>
+            </p>
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="email" className="text-white">
+                E-mail
+              </Label>
+              <Input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="seu.nome@100limites.com"
+                className="bg-gray-800 border-white text-white placeholder:text-gray-400 focus:border-white focus:ring-red-500"
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="password" className="text-white">
+                Senha
+              </Label>
+              <div className="relative">
+                <Input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Sua senha"
+                  className="bg-gray-800 border-white text-white placeholder:text-gray-400 focus:border-white focus:ring-red-500 pr-10"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-white"
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-4 w-4" />
+                  ) : (
+                    <Eye className="h-4 w-4" />
+                  )}
+                </button>
+              </div>
+            </div>
+
+            <Button
+              type="submit"
+              disabled={isLoading}
+              className="w-full bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-md transition-colors"
+            >
+              {isLoading ? "Entrando..." : "Continuar com E-mail"}
+            </Button>
+          </form>
+
+          <div className="text-center text-sm text-gray-400">
+            <a href="/forgot-password" className="text-red-500 hover:text-red-400 underline">
+              Esqueceu sua senha?
+            </a>
+          </div>
+
+          <div className="text-center text-xs text-gray-400">
+            Ao continuar, você concorda com nossos termos de serviço
+>>>>>>> Stashed changes
           </div>
 
           {/* Login Button */}
