@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { LogOut, Settings, User, Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -15,6 +14,7 @@ export function UserMenu() {
   const [open, setOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
 
+<<<<<<< Updated upstream
   // Mock user data - will be replaced with real user data from authentication
   const user = {
     name: "Admin User",

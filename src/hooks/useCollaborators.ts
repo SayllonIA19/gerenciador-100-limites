@@ -2,38 +2,51 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/components/ui/use-toast';
-import type { Tables, TablesInsert, TablesUpdate } from '@/integrations/supabase/types';
 
-type Project = Tables<'projects'>;
-type ProjectInsert = TablesInsert<'projects'>;
-type ProjectUpdate = TablesUpdate<'projects'>;
+interface Collaborator {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  avatar_url?: string;
+  status: 'active' | 'pending' | 'inactive';
+  created_at: string;
+  updated_at: string;
+}
 
-export function useProjects() {
-  const [projects, setProjects] = useState<Project[]>([]);
+interface CollaboratorInsert {
+  name: string;
+  email: string;
+  role: string;
+  avatar_url?: string;
+  status?: 'active' | 'pending' | 'inactive';
+}
+
+export function useCollaborators() {
+  const [collaborators, setCollaborators] = useState<Collaborator[]>([]);
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
   const { toast } = useToast();
 
-  // Fetch projects
-  const fetchProjects = async () => {
+  // Fetch collaborators
+  const fetchCollaborators = async () => {
     if (!user) return;
 
     try {
       setLoading(true);
       const { data, error } = await supabase
-        .from('projects')
+        .from('collaborators')
         .select('*')
-        .eq('user_id', user.id)
         .order('created_at', { ascending: false });
 
       if (error) {
         throw error;
       }
 
-      setProjects(data || []);
+      setCollaborators(data || []);
     } catch (error: any) {
       toast({
-        title: "Erro ao carregar projetos",
+        title: "Erro ao carregar colaboradores",
         description: error.message,
         variant: "destructive",
       });
@@ -42,26 +55,15 @@ export function useProjects() {
     }
   };
 
-  // Create project
-  const createProject = async (projectData: Omit<ProjectInsert, 'user_id'>) => {
-    if (!user) {
-      toast({
-        title: "Erro",
-        description: "Usuário não autenticado",
-        variant: "destructive",
-      });
-      return { error: new Error("Usuário não autenticado") };
-    }
-
+  // Create collaborator
+  const createCollaborator = async (collaboratorData: CollaboratorInsert) => {
     try {
-      const newProject: ProjectInsert = {
-        ...projectData,
-        user_id: user.id,
-      };
-
       const { data, error } = await supabase
-        .from('projects')
-        .insert(newProject)
+        .from('collaborators')
+        .insert({
+          ...collaboratorData,
+          status: collaboratorData.status || 'pending'
+        })
         .select()
         .single();
 
@@ -69,16 +71,16 @@ export function useProjects() {
         throw error;
       }
 
-      setProjects(prev => [data, ...prev]);
+      setCollaborators(prev => [data, ...prev]);
       toast({
-        title: "Projeto criado!",
-        description: "Seu projeto foi criado com sucesso.",
+        title: "Colaborador adicionado!",
+        description: "O colaborador foi adicionado com sucesso.",
       });
 
       return { data, error: null };
     } catch (error: any) {
       toast({
-        title: "Erro ao criar projeto",
+        title: "Erro ao adicionar colaborador",
         description: error.message,
         variant: "destructive",
       });
@@ -86,11 +88,11 @@ export function useProjects() {
     }
   };
 
-  // Update project
-  const updateProject = async (id: string, updates: ProjectUpdate) => {
+  // Update collaborator
+  const updateCollaborator = async (id: string, updates: Partial<Collaborator>) => {
     try {
       const { data, error } = await supabase
-        .from('projects')
+        .from('collaborators')
         .update(updates)
         .eq('id', id)
         .select()
@@ -100,21 +102,21 @@ export function useProjects() {
         throw error;
       }
 
-      setProjects(prev => 
-        prev.map(project => 
-          project.id === id ? data : project
+      setCollaborators(prev => 
+        prev.map(collaborator => 
+          collaborator.id === id ? data : collaborator
         )
       );
 
       toast({
-        title: "Projeto atualizado!",
+        title: "Colaborador atualizado!",
         description: "As alterações foram salvas com sucesso.",
       });
 
       return { data, error: null };
     } catch (error: any) {
       toast({
-        title: "Erro ao atualizar projeto",
+        title: "Erro ao atualizar colaborador",
         description: error.message,
         variant: "destructive",
       });
@@ -122,11 +124,11 @@ export function useProjects() {
     }
   };
 
-  // Delete project
-  const deleteProject = async (id: string) => {
+  // Delete collaborator
+  const deleteCollaborator = async (id: string) => {
     try {
       const { error } = await supabase
-        .from('projects')
+        .from('collaborators')
         .delete()
         .eq('id', id);
 
@@ -134,16 +136,16 @@ export function useProjects() {
         throw error;
       }
 
-      setProjects(prev => prev.filter(project => project.id !== id));
+      setCollaborators(prev => prev.filter(collaborator => collaborator.id !== id));
       toast({
-        title: "Projeto excluído!",
-        description: "O projeto foi removido com sucesso.",
+        title: "Colaborador removido!",
+        description: "O colaborador foi removido com sucesso.",
       });
 
       return { error: null };
     } catch (error: any) {
       toast({
-        title: "Erro ao excluir projeto",
+        title: "Erro ao remover colaborador",
         description: error.message,
         variant: "destructive",
       });
@@ -151,11 +153,11 @@ export function useProjects() {
     }
   };
 
-  // Get project by ID
-  const getProject = async (id: string) => {
+  // Get collaborator by ID
+  const getCollaborator = async (id: string) => {
     try {
       const { data, error } = await supabase
-        .from('projects')
+        .from('collaborators')
         .select('*')
         .eq('id', id)
         .single();
@@ -167,7 +169,7 @@ export function useProjects() {
       return { data, error: null };
     } catch (error: any) {
       toast({
-        title: "Erro ao carregar projeto",
+        title: "Erro ao carregar colaborador",
         description: error.message,
         variant: "destructive",
       });
@@ -175,18 +177,18 @@ export function useProjects() {
     }
   };
 
-  // Load projects on mount and when user changes
+  // Load collaborators on mount
   useEffect(() => {
-    fetchProjects();
+    fetchCollaborators();
   }, [user]);
 
   return {
-    projects,
+    collaborators,
     loading,
-    fetchProjects,
-    createProject,
-    updateProject,
-    deleteProject,
-    getProject,
+    fetchCollaborators,
+    createCollaborator,
+    updateCollaborator,
+    deleteCollaborator,
+    getCollaborator,
   };
-}
+} 

@@ -1,4 +1,3 @@
-
 import { Sidebar } from "./Sidebar";
 import { NotificationDropdown } from "./NotificationDropdown";
 import { UserMenu } from "./UserMenu";
@@ -21,7 +20,6 @@ export function Layout({ children }: LayoutProps) {
           <NotificationDropdown />
           <UserMenu />
         </div>
-        <div className="p-6 pt-6">
           {children}
         </div>
       </main>

@@ -1,5 +1,5 @@
-
 import { useState } from "react";
+<<<<<<< Updated upstream
 import { NavLink } from "react-router-dom";
 import {
   LayoutDashboard,
@@ -44,6 +44,7 @@ export function Sidebar() {
   const { getUnreadCountByType } = useNotifications();
 
   return (
+<<<<<<< Updated upstream
     <>
       {/* Mobile menu button */}
       <button

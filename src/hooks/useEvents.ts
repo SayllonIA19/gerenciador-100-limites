@@ -4,36 +4,39 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/components/ui/use-toast';
 import type { Tables, TablesInsert, TablesUpdate } from '@/integrations/supabase/types';
 
-type Project = Tables<'projects'>;
-type ProjectInsert = TablesInsert<'projects'>;
-type ProjectUpdate = TablesUpdate<'projects'>;
+type Event = Tables<'events'>;
+type EventInsert = TablesInsert<'events'>;
+type EventUpdate = TablesUpdate<'events'>;
 
-export function useProjects() {
-  const [projects, setProjects] = useState<Project[]>([]);
+export function useEvents() {
+  const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
   const { toast } = useToast();
 
-  // Fetch projects
-  const fetchProjects = async () => {
+  // Fetch events
+  const fetchEvents = async () => {
     if (!user) return;
 
     try {
       setLoading(true);
       const { data, error } = await supabase
-        .from('projects')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false });
+        .from('events')
+        .select(`
+          *,
+          projects!inner(user_id)
+        `)
+        .eq('projects.user_id', user.id)
+        .order('start_date', { ascending: true });
 
       if (error) {
         throw error;
       }
 
-      setProjects(data || []);
+      setEvents(data || []);
     } catch (error: any) {
       toast({
-        title: "Erro ao carregar projetos",
+        title: "Erro ao carregar eventos",
         description: error.message,
         variant: "destructive",
       });
@@ -42,8 +45,8 @@ export function useProjects() {
     }
   };
 
-  // Create project
-  const createProject = async (projectData: Omit<ProjectInsert, 'user_id'>) => {
+  // Create event
+  const createEvent = async (eventData: Omit<EventInsert, 'organizer_id'>) => {
     if (!user) {
       toast({
         title: "Erro",
@@ -54,14 +57,14 @@ export function useProjects() {
     }
 
     try {
-      const newProject: ProjectInsert = {
-        ...projectData,
-        user_id: user.id,
+      const newEvent: EventInsert = {
+        ...eventData,
+        organizer_id: user.id,
       };
 
       const { data, error } = await supabase
-        .from('projects')
-        .insert(newProject)
+        .from('events')
+        .insert(newEvent)
         .select()
         .single();
 
@@ -69,16 +72,16 @@ export function useProjects() {
         throw error;
       }
 
-      setProjects(prev => [data, ...prev]);
+      setEvents(prev => [data, ...prev]);
       toast({
-        title: "Projeto criado!",
-        description: "Seu projeto foi criado com sucesso.",
+        title: "Evento criado!",
+        description: "Seu evento foi criado com sucesso.",
       });
 
       return { data, error: null };
     } catch (error: any) {
       toast({
-        title: "Erro ao criar projeto",
+        title: "Erro ao criar evento",
         description: error.message,
         variant: "destructive",
       });
@@ -86,11 +89,11 @@ export function useProjects() {
     }
   };
 
-  // Update project
-  const updateProject = async (id: string, updates: ProjectUpdate) => {
+  // Update event
+  const updateEvent = async (id: string, updates: EventUpdate) => {
     try {
       const { data, error } = await supabase
-        .from('projects')
+        .from('events')
         .update(updates)
         .eq('id', id)
         .select()
@@ -100,21 +103,21 @@ export function useProjects() {
         throw error;
       }
 
-      setProjects(prev => 
-        prev.map(project => 
-          project.id === id ? data : project
+      setEvents(prev => 
+        prev.map(event => 
+          event.id === id ? data : event
         )
       );
 
       toast({
-        title: "Projeto atualizado!",
+        title: "Evento atualizado!",
         description: "As alterações foram salvas com sucesso.",
       });
 
       return { data, error: null };
     } catch (error: any) {
       toast({
-        title: "Erro ao atualizar projeto",
+        title: "Erro ao atualizar evento",
         description: error.message,
         variant: "destructive",
       });
@@ -122,11 +125,11 @@ export function useProjects() {
     }
   };
 
-  // Delete project
-  const deleteProject = async (id: string) => {
+  // Delete event
+  const deleteEvent = async (id: string) => {
     try {
       const { error } = await supabase
-        .from('projects')
+        .from('events')
         .delete()
         .eq('id', id);
 
@@ -134,16 +137,16 @@ export function useProjects() {
         throw error;
       }
 
-      setProjects(prev => prev.filter(project => project.id !== id));
+      setEvents(prev => prev.filter(event => event.id !== id));
       toast({
-        title: "Projeto excluído!",
-        description: "O projeto foi removido com sucesso.",
+        title: "Evento excluído!",
+        description: "O evento foi removido com sucesso.",
       });
 
       return { error: null };
     } catch (error: any) {
       toast({
-        title: "Erro ao excluir projeto",
+        title: "Erro ao excluir evento",
         description: error.message,
         variant: "destructive",
       });
@@ -151,11 +154,11 @@ export function useProjects() {
     }
   };
 
-  // Get project by ID
-  const getProject = async (id: string) => {
+  // Get event by ID
+  const getEvent = async (id: string) => {
     try {
       const { data, error } = await supabase
-        .from('projects')
+        .from('events')
         .select('*')
         .eq('id', id)
         .single();
@@ -167,7 +170,7 @@ export function useProjects() {
       return { data, error: null };
     } catch (error: any) {
       toast({
-        title: "Erro ao carregar projeto",
+        title: "Erro ao carregar evento",
         description: error.message,
         variant: "destructive",
       });
@@ -175,18 +178,18 @@ export function useProjects() {
     }
   };
 
-  // Load projects on mount and when user changes
+  // Load events on mount and when user changes
   useEffect(() => {
-    fetchProjects();
+    fetchEvents();
   }, [user]);
 
   return {
-    projects,
+    events,
     loading,
-    fetchProjects,
-    createProject,
-    updateProject,
-    deleteProject,
-    getProject,
+    fetchEvents,
+    createEvent,
+    updateEvent,
+    deleteEvent,
+    getEvent,
   };
-}
+} 

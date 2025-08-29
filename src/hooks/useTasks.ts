@@ -4,36 +4,39 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/components/ui/use-toast';
 import type { Tables, TablesInsert, TablesUpdate } from '@/integrations/supabase/types';
 
-type Project = Tables<'projects'>;
-type ProjectInsert = TablesInsert<'projects'>;
-type ProjectUpdate = TablesUpdate<'projects'>;
+type Task = Tables<'tasks'>;
+type TaskInsert = TablesInsert<'tasks'>;
+type TaskUpdate = TablesUpdate<'tasks'>;
 
-export function useProjects() {
-  const [projects, setProjects] = useState<Project[]>([]);
+export function useTasks() {
+  const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
   const { toast } = useToast();
 
-  // Fetch projects
-  const fetchProjects = async () => {
+  // Fetch tasks
+  const fetchTasks = async () => {
     if (!user) return;
 
     try {
       setLoading(true);
       const { data, error } = await supabase
-        .from('projects')
-        .select('*')
-        .eq('user_id', user.id)
+        .from('tasks')
+        .select(`
+          *,
+          projects!inner(user_id)
+        `)
+        .eq('projects.user_id', user.id)
         .order('created_at', { ascending: false });
 
       if (error) {
         throw error;
       }
 
-      setProjects(data || []);
+      setTasks(data || []);
     } catch (error: any) {
       toast({
-        title: "Erro ao carregar projetos",
+        title: "Erro ao carregar tarefas",
         description: error.message,
         variant: "destructive",
       });
@@ -42,8 +45,8 @@ export function useProjects() {
     }
   };
 
-  // Create project
-  const createProject = async (projectData: Omit<ProjectInsert, 'user_id'>) => {
+  // Create task
+  const createTask = async (taskData: Omit<TaskInsert, 'created_by'>) => {
     if (!user) {
       toast({
         title: "Erro",
@@ -54,14 +57,14 @@ export function useProjects() {
     }
 
     try {
-      const newProject: ProjectInsert = {
-        ...projectData,
-        user_id: user.id,
+      const newTask: TaskInsert = {
+        ...taskData,
+        created_by: user.id,
       };
 
       const { data, error } = await supabase
-        .from('projects')
-        .insert(newProject)
+        .from('tasks')
+        .insert(newTask)
         .select()
         .single();
 
@@ -69,16 +72,16 @@ export function useProjects() {
         throw error;
       }
 
-      setProjects(prev => [data, ...prev]);
+      setTasks(prev => [data, ...prev]);
       toast({
-        title: "Projeto criado!",
-        description: "Seu projeto foi criado com sucesso.",
+        title: "Tarefa criada!",
+        description: "Sua tarefa foi criada com sucesso.",
       });
 
       return { data, error: null };
     } catch (error: any) {
       toast({
-        title: "Erro ao criar projeto",
+        title: "Erro ao criar tarefa",
         description: error.message,
         variant: "destructive",
       });
@@ -86,11 +89,11 @@ export function useProjects() {
     }
   };
 
-  // Update project
-  const updateProject = async (id: string, updates: ProjectUpdate) => {
+  // Update task
+  const updateTask = async (id: string, updates: TaskUpdate) => {
     try {
       const { data, error } = await supabase
-        .from('projects')
+        .from('tasks')
         .update(updates)
         .eq('id', id)
         .select()
@@ -100,21 +103,21 @@ export function useProjects() {
         throw error;
       }
 
-      setProjects(prev => 
-        prev.map(project => 
-          project.id === id ? data : project
+      setTasks(prev => 
+        prev.map(task => 
+          task.id === id ? data : task
         )
       );
 
       toast({
-        title: "Projeto atualizado!",
+        title: "Tarefa atualizada!",
         description: "As alterações foram salvas com sucesso.",
       });
 
       return { data, error: null };
     } catch (error: any) {
       toast({
-        title: "Erro ao atualizar projeto",
+        title: "Erro ao atualizar tarefa",
         description: error.message,
         variant: "destructive",
       });
@@ -122,11 +125,11 @@ export function useProjects() {
     }
   };
 
-  // Delete project
-  const deleteProject = async (id: string) => {
+  // Delete task
+  const deleteTask = async (id: string) => {
     try {
       const { error } = await supabase
-        .from('projects')
+        .from('tasks')
         .delete()
         .eq('id', id);
 
@@ -134,16 +137,16 @@ export function useProjects() {
         throw error;
       }
 
-      setProjects(prev => prev.filter(project => project.id !== id));
+      setTasks(prev => prev.filter(task => task.id !== id));
       toast({
-        title: "Projeto excluído!",
-        description: "O projeto foi removido com sucesso.",
+        title: "Tarefa excluída!",
+        description: "A tarefa foi removida com sucesso.",
       });
 
       return { error: null };
     } catch (error: any) {
       toast({
-        title: "Erro ao excluir projeto",
+        title: "Erro ao excluir tarefa",
         description: error.message,
         variant: "destructive",
       });
@@ -151,11 +154,11 @@ export function useProjects() {
     }
   };
 
-  // Get project by ID
-  const getProject = async (id: string) => {
+  // Get task by ID
+  const getTask = async (id: string) => {
     try {
       const { data, error } = await supabase
-        .from('projects')
+        .from('tasks')
         .select('*')
         .eq('id', id)
         .single();
@@ -167,7 +170,7 @@ export function useProjects() {
       return { data, error: null };
     } catch (error: any) {
       toast({
-        title: "Erro ao carregar projeto",
+        title: "Erro ao carregar tarefa",
         description: error.message,
         variant: "destructive",
       });
@@ -175,18 +178,18 @@ export function useProjects() {
     }
   };
 
-  // Load projects on mount and when user changes
+  // Load tasks on mount and when user changes
   useEffect(() => {
-    fetchProjects();
+    fetchTasks();
   }, [user]);
 
   return {
-    projects,
+    tasks,
     loading,
-    fetchProjects,
-    createProject,
-    updateProject,
-    deleteProject,
-    getProject,
+    fetchTasks,
+    createTask,
+    updateTask,
+    deleteTask,
+    getTask,
   };
-}
+} 

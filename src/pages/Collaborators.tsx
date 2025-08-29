@@ -1,229 +1,219 @@
+import { useState } from "react";
 import { Layout } from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Plus, Search, Download } from "lucide-react";
-import { useState } from "react";
+import { Plus, Search, Mail, Phone, MapPin, User } from "lucide-react";
+import { useCollaborators } from "@/hooks/useCollaborators";
 import { CollaboratorModal } from "@/components/CollaboratorModal";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
 
-// Mock data
-const effectiveCollaborators = [
-  {
-    id: "1",
-    fullName: "Alice Johnson",
-    email: "alice.johnson@email.com",
-    phone: "+1 (555) 123-4567",
-    function: "Lead Photographer",
-    shirtSize: "M",
-    pantsSize: "32",
-    shoeSize: "8",
-    notes: "Specializes in event photography and has 5+ years experience.",
-    documents: ["portfolio.pdf", "contract.pdf"],
-    photo: null
-  },
-  {
-    id: "2",
-    fullName: "Bob Martinez",
-    email: "bob.martinez@email.com",
-    phone: "+1 (555) 234-5678",
-    function: "Sound Engineer",
-    shirtSize: "L",
-    pantsSize: "34",
-    shoeSize: "10",
-    notes: "Expert in live sound mixing and has worked on major events.",
-    documents: ["certification.pdf"],
-    photo: null
-  },
-  {
-    id: "3",
-    fullName: "Carol Chen",
-    email: "carol.chen@email.com",
-    phone: "+1 (555) 345-6789",
-    function: "Event Coordinator",
-    shirtSize: "S",
-    pantsSize: "28",
-    shoeSize: "7",
-    notes: "Experienced in managing large-scale corporate events.",
-    documents: ["resume.pdf", "references.pdf"],
-    photo: null
-  }
-];
+const roleColors = {
+  "admin": "bg-red-100 text-red-800",
+  "manager": "bg-blue-100 text-blue-800",
+  "member": "bg-green-100 text-green-800",
+  "guest": "bg-gray-100 text-gray-800"
+};
 
-const participantCollaborators = [
-  {
-    id: "4",
-    fullName: "David Wilson",
-    email: "david.wilson@email.com",
-    phone: "+1 (555) 456-7890",
-    function: "Freelance Videographer",
-    shirtSize: "XL",
-    pantsSize: "36",
-    shoeSize: "11",
-    notes: "Drone pilot license and 4K video production specialist.",
-    documents: ["drone_license.pdf", "showreel.mp4"],
-    photo: null
-  },
-  {
-    id: "5",
-    fullName: "Eva Rodriguez",
-    email: "eva.rodriguez@email.com",
-    phone: "+1 (555) 567-8901",
-    function: "External Catering Manager",
-    shirtSize: "M",
-    pantsSize: "30",
-    shoeSize: "8",
-    notes: "Food safety certified and specializes in dietary accommodations.",
-    documents: ["food_safety_cert.pdf"],
-    photo: null
-  }
-];
-
-function CollaboratorCard({ collaborator, onExport, onClick }: { 
-  collaborator: any, 
-  onExport: () => void,
-  onClick: () => void 
-}) {
-  return (
-    <div className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 cursor-pointer">
-      <div className="flex items-center space-x-4" onClick={onClick}>
-        <Avatar className="h-12 w-12">
-          <AvatarImage src={collaborator.photo} />
-          <AvatarFallback className="bg-blue-100 text-blue-600 font-medium">
-            {collaborator.fullName.split(' ').map((n: string) => n[0]).join('')}
-          </AvatarFallback>
-        </Avatar>
-        <div>
-          <h3 className="font-medium text-gray-900">{collaborator.fullName}</h3>
-          <Badge variant="secondary" className="mt-1">{collaborator.function}</Badge>
-        </div>
-      </div>
-      <Button 
-        variant="outline" 
-        size="sm" 
-        onClick={(e) => {
-          e.stopPropagation();
-          onExport();
-        }}
-      >
-        <Download className="h-4 w-4 mr-2" />
-        Export
-      </Button>
-    </div>
-  );
-}
+const roleLabels = {
+  "admin": "Administrador",
+  "manager": "Gerente",
+  "member": "Membro",
+  "guest": "Convidado"
+};
 
 export default function Collaborators() {
+  const { collaborators, loading, deleteCollaborator } = useCollaborators();
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCollaborator, setSelectedCollaborator] = useState(null);
+  const [roleFilter, setRoleFilter] = useState("all");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedCollaborator, setSelectedCollaborator] = useState<any>(null);
 
-  const allCollaborators = [...effectiveCollaborators, ...participantCollaborators];
-  const filteredEffective = effectiveCollaborators.filter(collaborator =>
-    collaborator.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    collaborator.function.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    collaborator.email.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredCollaborators = collaborators.filter(collaborator => {
+    const matchesSearch = collaborator.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         (collaborator.email && collaborator.email.toLowerCase().includes(searchTerm.toLowerCase()));
+    const matchesRole = roleFilter === "all" || collaborator.role === roleFilter;
+    
+    return matchesSearch && matchesRole;
+  });
 
-  const filteredParticipants = participantCollaborators.filter(collaborator =>
-    collaborator.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    collaborator.function.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    collaborator.email.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const handleExport = (collaborator: any) => {
-    // This would generate and download a file with collaborator information
-    console.log('Exporting collaborator:', collaborator.fullName);
-  };
-
-  const handleCollaboratorClick = (collaborator: any) => {
+  const handleEditCollaborator = (collaborator: any) => {
     setSelectedCollaborator(collaborator);
     setIsModalOpen(true);
   };
+
+  const handleDeleteCollaborator = async (collaboratorId: string) => {
+    if (confirm("Tem certeza que deseja excluir este colaborador?")) {
+      await deleteCollaborator(collaboratorId);
+    }
+  };
+
+  const handleAddCollaborator = () => {
+    setSelectedCollaborator(null);
+    setIsModalOpen(true);
+  };
+
+  const getInitials = (name: string) => {
+    return name
+      .split(' ')
+      .map(word => word[0])
+      .join('')
+      .toUpperCase()
+      .slice(0, 2);
+  };
+
+  if (loading) {
+    return (
+      <Layout>
+        <div className="flex items-center justify-center h-64">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+            <p className="mt-2 text-gray-600">Carregando colaboradores...</p>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
 
   return (
     <Layout>
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Collaborators</h1>
-            <p className="text-gray-600 mt-2">Manage your team of external collaborators</p>
+            <h1 className="text-3xl font-bold text-gray-900">Colaboradores</h1>
+            <p className="text-gray-600 mt-2">Gerencie sua equipe e colaboradores</p>
           </div>
-          <Button className="bg-blue-600 hover:bg-blue-700">
+          <Button 
+            className="bg-blue-600 hover:bg-blue-700"
+            onClick={handleAddCollaborator}
+          >
             <Plus className="h-4 w-4 mr-2" />
-            Add Collaborator
+            Adicionar Colaborador
           </Button>
         </div>
 
-        {/* Search */}
+        {/* Filters */}
         <div className="bg-white rounded-lg shadow-sm border p-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
               <Input
-                placeholder="Search collaborators..."
+                placeholder="Buscar colaboradores..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10"
               />
             </div>
+            <Select value={roleFilter} onValueChange={setRoleFilter}>
+              <SelectTrigger>
+                <SelectValue placeholder="Filtrar por função" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Todas as Funções</SelectItem>
+                <SelectItem value="admin">Administrador</SelectItem>
+                <SelectItem value="manager">Gerente</SelectItem>
+                <SelectItem value="member">Membro</SelectItem>
+                <SelectItem value="guest">Convidado</SelectItem>
+              </SelectContent>
+            </Select>
             <div className="text-sm text-gray-500 flex items-center">
-              Showing {filteredEffective.length + filteredParticipants.length} of {allCollaborators.length} collaborators
+              Mostrando {filteredCollaborators.length} de {collaborators.length} colaboradores
             </div>
           </div>
         </div>
 
-        {/* Effective Collaborators */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-xl text-green-700">Effective Collaborators</CardTitle>
-            <p className="text-sm text-gray-600">Team members who are part of the company</p>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {filteredEffective.map((collaborator) => (
-              <CollaboratorCard 
-                key={collaborator.id} 
-                collaborator={collaborator}
-                onExport={() => handleExport(collaborator)}
-                onClick={() => handleCollaboratorClick(collaborator)}
-              />
-            ))}
-            {filteredEffective.length === 0 && (
-              <div className="p-8 text-center text-gray-500">
-                No effective collaborators found.
-              </div>
-            )}
-          </CardContent>
-        </Card>
+        {/* Collaborators Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredCollaborators.map((collaborator) => (
+            <Card key={collaborator.id} className="hover:shadow-md transition-shadow">
+              <CardHeader>
+                <div className="flex items-center space-x-4">
+                  <Avatar className="h-12 w-12">
+                    <AvatarImage src={collaborator.avatar_url || undefined} />
+                    <AvatarFallback className="bg-blue-100 text-blue-600">
+                      {getInitials(collaborator.name)}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="flex-1 min-w-0">
+                    <CardTitle className="text-lg truncate">{collaborator.name}</CardTitle>
+                    <Badge className={roleColors[collaborator.role as keyof typeof roleColors]}>
+                      {roleLabels[collaborator.role as keyof typeof roleLabels]}
+                    </Badge>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {collaborator.email && (
+                  <div className="flex items-center space-x-2 text-sm text-gray-500">
+                    <Mail className="h-4 w-4" />
+                    <span className="truncate">{collaborator.email}</span>
+                  </div>
+                )}
+                
+                {collaborator.phone && (
+                  <div className="flex items-center space-x-2 text-sm text-gray-500">
+                    <Phone className="h-4 w-4" />
+                    <span>{collaborator.phone}</span>
+                  </div>
+                )}
+                
+                {collaborator.location && (
+                  <div className="flex items-center space-x-2 text-sm text-gray-500">
+                    <MapPin className="h-4 w-4" />
+                    <span className="truncate">{collaborator.location}</span>
+                  </div>
+                )}
 
-        {/* Participant Collaborators */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-xl text-blue-700">Participant Collaborators</CardTitle>
-            <p className="text-sm text-gray-600">External collaborators participating in projects</p>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {filteredParticipants.map((collaborator) => (
-              <CollaboratorCard 
-                key={collaborator.id} 
-                collaborator={collaborator}
-                onExport={() => handleExport(collaborator)}
-                onClick={() => handleCollaboratorClick(collaborator)}
-              />
-            ))}
-            {filteredParticipants.length === 0 && (
-              <div className="p-8 text-center text-gray-500">
-                No participant collaborators found.
-              </div>
-            )}
-          </CardContent>
-        </Card>
+                {collaborator.created_at && (
+                  <div className="flex items-center space-x-2 text-sm text-gray-500">
+                    <User className="h-4 w-4" />
+                    <span>Adicionado em {format(new Date(collaborator.created_at), 'dd/MM/yyyy', { locale: ptBR })}</span>
+                  </div>
+                )}
 
-        <CollaboratorModal 
+                <div className="flex gap-2 pt-2">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="flex-1"
+                    onClick={() => handleEditCollaborator(collaborator)}
+                  >
+                    Editar
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => handleDeleteCollaborator(collaborator.id)}
+                    className="text-red-600 hover:text-red-700"
+                  >
+                    Excluir
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        {filteredCollaborators.length === 0 && (
+          <div className="text-center py-12">
+            <p className="text-gray-500">
+              {collaborators.length === 0 
+                ? "Nenhum colaborador encontrado. Adicione seu primeiro colaborador!" 
+                : "Nenhum colaborador encontrado que corresponda aos seus critérios."
+              }
+            </p>
+          </div>
+        )}
+
+        {/* Modal */}
+        <CollaboratorModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
           collaborator={selectedCollaborator}
-          open={isModalOpen}
-          onOpenChange={setIsModalOpen}
         />
       </div>
     </Layout>

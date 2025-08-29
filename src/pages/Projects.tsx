@@ -1,39 +1,64 @@
-
+import { useState } from "react";
 import { Layout } from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Search, User, Calendar } from "lucide-react";
-import { useState } from "react";
-
-// Mock data
-const projects = [
-  { id: "1", name: "Redesign do Website", description: "Reformulação completa do website da empresa", status: "Ativo", owner: "João Silva", createdDate: "2024-05-01", progress: 65 },
-  { id: "2", name: "Desenvolvimento de App Mobile", description: "App nativo para iOS e Android", status: "Ativo", owner: "Maria Santos", createdDate: "2024-04-15", progress: 40 },
-  { id: "3", name: "Campanha de Marketing Q2", description: "Campanha de marketing digital e redes sociais", status: "Concluído", owner: "Pedro Johnson", createdDate: "2024-03-01", progress: 100 },
-  { id: "4", name: "Pesquisa de Produto", description: "Pesquisa de mercado para nova linha de produtos", status: "Em Espera", owner: "Ana Wilson", createdDate: "2024-05-20", progress: 25 },
-  { id: "5", name: "Integração de Sistema", description: "Integração do novo sistema CRM", status: "Ativo", owner: "Carlos Brown", createdDate: "2024-06-01", progress: 80 }
-];
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Plus, Search, User, Calendar, Progress } from "lucide-react";
+import { useProjects } from "@/hooks/useProjects";
+import { useNavigate } from "react-router-dom";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
 
 const statusColors = {
-  "Ativo": "bg-green-100 text-green-800",
-  "Em Espera": "bg-yellow-100 text-yellow-800",
-  "Concluído": "bg-blue-100 text-blue-800"
+  "Planning": "bg-blue-100 text-blue-800",
+  "In Progress": "bg-orange-100 text-orange-800",
+  "Review": "bg-purple-100 text-purple-800",
+  "Completed": "bg-green-100 text-green-800",
+  "On Hold": "bg-gray-100 text-gray-800"
+};
+
+const statusLabels = {
+  "Planning": "Planejamento",
+  "In Progress": "Em Andamento",
+  "Review": "Em Revisão",
+  "Completed": "Concluído",
+  "On Hold": "Em Espera"
 };
 
 export default function Projects() {
+  const navigate = useNavigate();
+  const { projects, loading, deleteProject } = useProjects();
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
 
   const filteredProjects = projects.filter(project => {
-    const matchesSearch = project.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         project.description.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch = project.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         (project.subtitle && project.subtitle.toLowerCase().includes(searchTerm.toLowerCase()));
     const matchesStatus = statusFilter === "all" || project.status === statusFilter;
     
     return matchesSearch && matchesStatus;
   });
+
+  const handleDeleteProject = async (projectId: string) => {
+    if (confirm("Tem certeza que deseja excluir este projeto?")) {
+      await deleteProject(projectId);
+    }
+  };
+
+  if (loading) {
+    return (
+      <Layout>
+        <div className="flex items-center justify-center h-64">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+            <p className="mt-2 text-gray-600">Carregando projetos...</p>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
 
   return (
     <Layout>
@@ -43,7 +68,10 @@ export default function Projects() {
             <h1 className="text-3xl font-bold text-gray-900">Projetos</h1>
             <p className="text-gray-600 mt-2">Gerencie e acompanhe todos os seus projetos</p>
           </div>
-          <Button className="bg-blue-600 hover:bg-blue-700">
+          <Button 
+            className="bg-blue-600 hover:bg-blue-700"
+            onClick={() => navigate("/projects/new")}
+          >
             <Plus className="h-4 w-4 mr-2" />
             Novo Projeto
           </Button>
@@ -67,9 +95,11 @@ export default function Projects() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">Todos os Status</SelectItem>
-                <SelectItem value="Ativo">Ativo</SelectItem>
-                <SelectItem value="Em Espera">Em Espera</SelectItem>
-                <SelectItem value="Concluído">Concluído</SelectItem>
+                <SelectItem value="Planning">Planejamento</SelectItem>
+                <SelectItem value="In Progress">Em Andamento</SelectItem>
+                <SelectItem value="Review">Em Revisão</SelectItem>
+                <SelectItem value="Completed">Concluído</SelectItem>
+                <SelectItem value="On Hold">Em Espera</SelectItem>
               </SelectContent>
             </Select>
             <div className="text-sm text-gray-500 flex items-center">
@@ -84,37 +114,64 @@ export default function Projects() {
             <Card key={project.id} className="cursor-pointer hover:shadow-md transition-shadow">
               <CardHeader>
                 <div className="flex items-start justify-between">
-                  <CardTitle className="text-lg">{project.name}</CardTitle>
+                  <CardTitle className="text-lg">{project.title}</CardTitle>
                   <Badge className={statusColors[project.status as keyof typeof statusColors]}>
-                    {project.status}
+                    {statusLabels[project.status as keyof typeof statusLabels]}
                   </Badge>
                 </div>
               </CardHeader>
               <CardContent className="space-y-4">
-                <p className="text-gray-600 text-sm">{project.description}</p>
+                {project.subtitle && (
+                  <p className="text-gray-600 text-sm">{project.subtitle}</p>
+                )}
                 
                 <div className="space-y-2">
-                  <div className="flex items-center space-x-2 text-sm text-gray-500">
-                    <User className="h-4 w-4" />
-                    <span>{project.owner}</span>
-                  </div>
-                  <div className="flex items-center space-x-2 text-sm text-gray-500">
-                    <Calendar className="h-4 w-4" />
-                    <span>Criado em {project.createdDate}</span>
-                  </div>
+                  {project.assigned_to && (
+                    <div className="flex items-center space-x-2 text-sm text-gray-500">
+                      <User className="h-4 w-4" />
+                      <span>{project.assigned_to}</span>
+                    </div>
+                  )}
+                  {project.created_at && (
+                    <div className="flex items-center space-x-2 text-sm text-gray-500">
+                      <Calendar className="h-4 w-4" />
+                      <span>Criado em {format(new Date(project.created_at), 'dd/MM/yyyy', { locale: ptBR })}</span>
+                    </div>
+                  )}
                 </div>
 
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-gray-500">Progresso</span>
-                    <span className="font-medium">{project.progress}%</span>
+                {project.progress !== null && (
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-gray-500">Progresso</span>
+                      <span className="font-medium">{project.progress}%</span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div 
+                        className="bg-blue-600 h-2 rounded-full transition-all duration-300" 
+                        style={{ width: `${project.progress}%` }}
+                      ></div>
+                    </div>
                   </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div 
-                      className="bg-blue-600 h-2 rounded-full transition-all duration-300" 
-                      style={{ width: `${project.progress}%` }}
-                    ></div>
-                  </div>
+                )}
+
+                <div className="flex gap-2">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="flex-1"
+                    onClick={() => navigate(`/projects/${project.id}`)}
+                  >
+                    Ver Detalhes
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => handleDeleteProject(project.id)}
+                    className="text-red-600 hover:text-red-700"
+                  >
+                    Excluir
+                  </Button>
                 </div>
               </CardContent>
             </Card>
@@ -123,7 +180,12 @@ export default function Projects() {
 
         {filteredProjects.length === 0 && (
           <div className="text-center py-12">
-            <p className="text-gray-500">Nenhum projeto encontrado que corresponda aos seus critérios.</p>
+            <p className="text-gray-500">
+              {projects.length === 0 
+                ? "Nenhum projeto encontrado. Crie seu primeiro projeto!" 
+                : "Nenhum projeto encontrado que corresponda aos seus critérios."
+              }
+            </p>
           </div>
         )}
       </div>

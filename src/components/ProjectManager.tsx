@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Calendar, User, DollarSign, Plus, Save, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -6,25 +6,15 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Calendar as CalendarComponent } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { format } from 'date-fns';
 import { useAuth } from '@/contexts/AuthContext';
 import { useProjects } from '@/hooks/useProjects';
+import type { TablesInsert } from '@/integrations/supabase/types';
 
-interface ProjectData {
-  id?: string;
-  title: string;
-  subtitle: string;
-  start_date: Date | undefined;
-  due_date: Date | undefined;
-  status: string;
-  priority: string;
-  assigned_to: string;
-  budget: string;
-  progress: number;
-}
+type ProjectData = Omit<TablesInsert<'projects'>, 'user_id'>;
 
 const statusConfig = {
   "Planning": { color: "bg-blue-100 text-blue-800", bgColor: "bg-blue-500" },
@@ -42,16 +32,16 @@ const priorityConfig = {
 
 export function ProjectManager() {
   const { user, signOut } = useAuth();
-  const { projects, saveProject } = useProjects();
+  const { createProject, loading } = useProjects();
   const [project, setProject] = useState<ProjectData>({
     title: "Nova Campanha de Marketing",
     subtitle: "Campanha de lançamento do produto Q3 2024",
-    start_date: new Date(),
+    start_date: new Date().toISOString().split('T')[0],
     due_date: undefined,
     status: "Planning",
     priority: "High",
     assigned_to: user?.email || "João Silva",
-    budget: "15000",
+    budget: 15000,
     progress: 25
   });
 
@@ -62,12 +52,26 @@ export function ProjectManager() {
   const handleSave = async () => {
     const projectToSave = {
       ...project,
-      budget: project.budget ? parseFloat(project.budget) : null,
-      start_date: project.start_date?.toISOString().split('T')[0] || null,
-      due_date: project.due_date?.toISOString().split('T')[0] || null,
+      budget: project.budget ? parseFloat(project.budget.toString()) : null,
+      progress: project.progress ? parseFloat(project.progress.toString()) : null,
     };
     
-    await saveProject(projectToSave);
+    const { error } = await createProject(projectToSave);
+    
+    if (!error) {
+      // Reset form after successful save
+      setProject({
+        title: "Nova Campanha de Marketing",
+        subtitle: "Campanha de lançamento do produto Q3 2024",
+        start_date: new Date().toISOString().split('T')[0],
+        due_date: undefined,
+        status: "Planning",
+        priority: "High",
+        assigned_to: user?.email || "João Silva",
+        budget: 15000,
+        progress: 25
+      });
+    }
   };
 
   const DatePicker = ({ 
@@ -157,8 +161,8 @@ export function ProjectManager() {
                 <div className="space-y-2">
                   <Label className="text-sm font-medium text-gray-700">Data de Início</Label>
                   <DatePicker
-                    date={project.start_date}
-                    onSelect={(date) => updateProject('start_date', date)}
+                    date={project.start_date ? new Date(project.start_date) : undefined}
+                    onSelect={(date) => updateProject('start_date', date?.toISOString().split('T')[0])}
                     placeholder="Selecionar data"
                   />
                 </div>
@@ -167,8 +171,8 @@ export function ProjectManager() {
                 <div className="space-y-2">
                   <Label className="text-sm font-medium text-gray-700">Data de Entrega</Label>
                   <DatePicker
-                    date={project.due_date}
-                    onSelect={(date) => updateProject('due_date', date)}
+                    date={project.due_date ? new Date(project.due_date) : undefined}
+                    onSelect={(date) => updateProject('due_date', date?.toISOString().split('T')[0])}
                     placeholder="Selecionar data"
                   />
                 </div>

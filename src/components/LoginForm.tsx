@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -52,6 +51,7 @@ export function LoginForm() {
   };
 
   return (
+<<<<<<< Updated upstream
     <div className="min-h-screen flex items-center justify-center bg-muted p-4">
       <div className="w-full max-w-md bg-background rounded-lg shadow-lg p-8">
         {/* Logo */}
