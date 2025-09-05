@@ -65,10 +65,7 @@ export default function Events() {
             <h1 className="text-3xl font-bold text-gray-900">Eventos</h1>
             <p className="text-gray-600 mt-2">Gerencie e acompanhe todos os seus eventos</p>
           </div>
-          <Button className="bg-blue-600 hover:bg-blue-700" onClick={() => setOpen(true)}>
-            <Plus className="h-4 w-4 mr-2" />
-            Novo Evento
-          </Button>
+ 
         </div>
 
         {/* Filtros */}
@@ -94,7 +91,11 @@ export default function Events() {
                 <SelectItem value="Batalha de Break">Batalha de Break</SelectItem>
               </SelectContent>
             </Select>
-            <div className="text-sm text-gray-500 flex items-center">
+                     <Button className="bg-blue-600 hover:bg-blue-700" onClick={() => setOpen(true)}>
+                          <Plus className="h-4 w-4 mr-2" />
+                          Novo Evento
+                      </Button>
+            <div className="text-sm text-gray-500 flex items-center ">
               Mostrando {filteredEvents.length} de {events.length} eventos
             </div>
           </div>
