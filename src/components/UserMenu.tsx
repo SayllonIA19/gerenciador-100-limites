@@ -1,4 +1,6 @@
 
+import { useNavigate } from "react-router-dom";
+
 import { useState } from "react";
 import { LogOut, Settings, User, Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -14,6 +16,9 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 export function UserMenu() {
   const [open, setOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const navigate = useNavigate(); // <-- Adicione esta linha
+
+
 
   // Mock user data - will be replaced with real user data from authentication
   const user = {
@@ -22,10 +27,11 @@ export function UserMenu() {
     avatar: "./avatar.png", // Placeholder avatar image path
   };
 
+  //função logout
   const handleLogout = () => {
-    // TODO: Implement logout functionality when authentication is integrated
-    console.log("Logout clicked");
+    localStorage.removeItem("token"); // ajuste conforme seu app
     setOpen(false);
+    navigate("/login");
   };
 
   const handleSettings = () => {
@@ -43,13 +49,13 @@ export function UserMenu() {
   const toggleDarkMode = () => {
     const newDarkMode = !isDarkMode;
     setIsDarkMode(newDarkMode);
-    
+
     if (newDarkMode) {
       document.documentElement.classList.add('dark');
     } else {
       document.documentElement.classList.remove('dark');
     }
-    
+
     console.log("Dark mode toggled:", newDarkMode);
   };
 
@@ -92,5 +98,8 @@ export function UserMenu() {
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
+
   );
+
+
 }
