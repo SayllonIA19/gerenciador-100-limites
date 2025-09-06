@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import {
@@ -40,7 +39,8 @@ const technologyItems = [
 ];
 
 export function Sidebar() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false); // mobile
+  const [expanded, setExpanded] = useState(true); // desktop hover
   const { getUnreadCountByType } = useNotifications();
 
   return (
@@ -62,20 +62,32 @@ export function Sidebar() {
       )}
 
       {/* Sidebar */}
-      <div className={cn(
-        "fixed lg:static inset-y-0 left-0 z-40 w-64 bg-[#111] text-white transform transition-transform duration-300 ease-in-out",
-        isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
-      )}>
-        <div className="flex items-center justify-center h-50 bg-[#111] cursor-pointer pt-6">
+      <div
+        className={cn(
+          "fixed lg:static inset-y-0 left-0 z-40 bg-[#111] text-white transform transition-all duration-300 ease-in-out h-full overflow-y-auto",
+          isOpen
+            ? "w-64 translate-x-0"
+            : "lg:" + (expanded ? "w-64" : "w-16") + " " + (expanded ? "translate-x-0" : "translate-x-0"),
+        )}
+        onMouseEnter={() => setExpanded(true)}
+        onMouseLeave={() => setExpanded(false)}
+      >
+        <div className={cn(
+          "flex items-center justify-center bg-[#111] cursor-pointer pt-6 transition-all duration-300",
+          expanded ? "h-24" : "h-16"
+        )}>
           <img
             src={logo100}
             alt="Logo 100 Limites"
-            className="w-40 mx-auto object-contain"
+            className={cn(
+              "mx-auto object-contain transition-all duration-300",
+              expanded ? "w-40" : "w-10"
+            )}
           />
         </div>
 
         <nav className="mt-8">
-          <div className="px-4 space-y-2">
+          <div className="px-2 space-y-2">
             {navigationItems.map((item) => (
               <NavLink
                 key={item.name}
@@ -83,16 +95,17 @@ export function Sidebar() {
                 onClick={() => setIsOpen(false)}
                 className={({ isActive }) =>
                   cn(
-                    "flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors relative",
+                    "flex items-center py-3 text-sm font-medium rounded-lg transition-colors relative",
+                    expanded ? "px-4" : "justify-center px-0",
                     isActive
                       ? "bg-red-600 text-white"
                       : "text-slate-300 hover:bg-slate-800 hover:text-white"
                   )
                 }
               >
-                <item.icon className="mr-3 h-5 w-5" />
-                {item.name}
-                {item.notificationType && (
+                <item.icon className={cn("h-5 w-5 transition-all", expanded ? "mr-3" : "")} />
+                {expanded && item.name}
+                {item.notificationType && expanded && (
                   <NotificationBadge
                     count={getUnreadCountByType(item.notificationType)}
                     className="ml-auto"
@@ -100,16 +113,20 @@ export function Sidebar() {
                 )}
               </NavLink>
             ))}
-            
             {/* Technology Section */}
-            <div className="mt-6">
-              <div className="flex items-center px-4 py-2">
+            <div className={cn("mt-6", !expanded && "flex flex-col items-center")}>
+              <div className={cn(
+                "flex items-center py-2 transition-all",
+                expanded ? "px-4" : "justify-center px-0"
+              )}>
                 <Code className="mr-3 h-5 w-5 text-slate-400" />
-                <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
-                  Tecnologia
-                </span>
+                {expanded && (
+                  <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                    Tecnologia
+                  </span>
+                )}
               </div>
-              <div className="mt-2 space-y-1">
+              <div className={cn("mt-2 space-y-1 w-full")}>
                 {technologyItems.map((item) => (
                   <NavLink
                     key={item.name}
@@ -117,15 +134,16 @@ export function Sidebar() {
                     onClick={() => setIsOpen(false)}
                     className={({ isActive }) =>
                       cn(
-                        "flex items-center px-4 py-2 ml-4 text-sm font-medium rounded-lg transition-colors",
+                        "flex items-center py-2 text-sm font-medium rounded-lg transition-colors",
+                        expanded ? "px-4" : "justify-center px-0",
                         isActive
                           ? "bg-blue-600 text-white"
                           : "text-slate-300 hover:bg-slate-800 hover:text-white"
                       )
                     }
                   >
-                    <item.icon className="mr-3 h-4 w-4" />
-                    {item.name}
+                    <item.icon className={cn("h-4 w-4 transition-all", expanded ? "mr-3" : "")} />
+                    {expanded && item.name}
                   </NavLink>
                 ))}
               </div>

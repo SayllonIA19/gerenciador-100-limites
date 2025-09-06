@@ -29,9 +29,9 @@ export default function Projects() {
 
   const filteredProjects = projects.filter(project => {
     const matchesSearch = project.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         project.description.toLowerCase().includes(searchTerm.toLowerCase());
+      project.description.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = statusFilter === "all" || project.status === statusFilter;
-    
+
     return matchesSearch && matchesStatus;
   });
 
@@ -43,10 +43,7 @@ export default function Projects() {
             <h1 className="text-3xl font-bold text-gray-900">Projetos</h1>
             <p className="text-gray-600 mt-2">Gerencie e acompanhe todos os seus projetos</p>
           </div>
-          <Button className="bg-blue-600 hover:bg-blue-700">
-            <Plus className="h-4 w-4 mr-2" />
-            Novo Projeto
-          </Button>
+
         </div>
 
         {/* Filters */}
@@ -72,6 +69,10 @@ export default function Projects() {
                 <SelectItem value="Concluído">Concluído</SelectItem>
               </SelectContent>
             </Select>
+            <Button className="bg-blue-600 hover:bg-blue-700">
+              <Plus className="h-4 w-4 mr-2" />
+              Novo Projeto
+            </Button>
             <div className="text-sm text-gray-500 flex items-center">
               Mostrando {filteredProjects.length} de {projects.length} projetos
             </div>
@@ -92,7 +93,7 @@ export default function Projects() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <p className="text-gray-600 text-sm">{project.description}</p>
-                
+
                 <div className="space-y-2">
                   <div className="flex items-center space-x-2 text-sm text-gray-500">
                     <User className="h-4 w-4" />
@@ -110,8 +111,8 @@ export default function Projects() {
                     <span className="font-medium">{project.progress}%</span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div 
-                      className="bg-blue-600 h-2 rounded-full transition-all duration-300" 
+                    <div
+                      className="bg-blue-600 h-2 rounded-full transition-all duration-300"
                       style={{ width: `${project.progress}%` }}
                     ></div>
                   </div>

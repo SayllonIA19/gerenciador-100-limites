@@ -91,7 +91,7 @@ export default function Events() {
                 <SelectItem value="Batalha de Break">Batalha de Break</SelectItem>
               </SelectContent>
             </Select>
-                     <Button className="bg-blue-600 hover:bg-blue-700" onClick={() => setOpen(true)}>
+                     <Button className="bg-blue-600 hover:bg-blue-700 w-21" onClick={() => setOpen(true)}>
                           <Plus className="h-4 w-4 mr-2" />
                           Novo Evento
                       </Button>
