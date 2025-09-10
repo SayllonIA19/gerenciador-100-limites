@@ -19,6 +19,7 @@ import { cn } from "@/lib/utils";
 import { useNotifications } from "@/hooks/useNotifications";
 import { NotificationBadge } from "./NotificationBadge";
 import logo100 from '@/assets/img/login/logo.png';
+import { url } from "inspector";
 
 const navigationItems = [
   { name: "Dashboard", href: "/", icon: LayoutDashboard, notificationType: null },
@@ -76,14 +77,18 @@ export function Sidebar() {
           "flex items-center justify-center bg-[#111] cursor-pointer pt-6 transition-all duration-300",
           expanded ? "h-24" : "h-16"
         )}>
-          <img
+          <NavLink to="/pages/auth.tsx">
+            <img
             src={logo100}
+            
             alt="Logo 100 Limites"
             className={cn(
               "mx-auto object-contain transition-all duration-300",
               expanded ? "w-40" : "w-10"
             )}
           />
+          </NavLink>
+          
         </div>
 
         <nav className="mt-8">
