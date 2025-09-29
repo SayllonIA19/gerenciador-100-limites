@@ -185,42 +185,15 @@ export function UserMenu() {
               <div className="grid grid-cols-3 gap-4 text-sm">
                 <div>
                   <p className="text-gray-500">Equipe</p>
-                  {isEditing ? (
-                    <input
-                      className="border rounded px-2 py-1 w-full"
-                      name="team"
-                      value={profile.team}
-                      onChange={handleChange}
-                    />
-                  ) : (
-                    <p>{profile.team}</p>
-                  )}
+                  <p>{profile.team}</p>
                 </div>
                 <div>
                   <p className="text-gray-500">Gestor da Equipe</p>
-                  {isEditing ? (
-                    <input
-                      className="border rounded px-2 py-1 w-full"
-                      name="manager"
-                      value={profile.manager}
-                      onChange={handleChange}
-                    />
-                  ) : (
-                    <p>{profile.manager}</p>
-                  )}
+                  <p>{profile.manager}</p>
                 </div>
                 <div>
                   <p className="text-gray-500">Minha Função</p>
-                  {isEditing ? (
-                    <input
-                      className="border rounded px-2 py-1 w-full"
-                      name="role"
-                      value={profile.role}
-                      onChange={handleChange}
-                    />
-                  ) : (
-                    <p>{profile.role}</p>
-                  )}
+                  <p>{profile.role}</p>
                 </div>
               </div>
             </div>
